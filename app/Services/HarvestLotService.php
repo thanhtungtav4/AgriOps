@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\RejectReason;
 use App\Models\HarvestLot;
 use App\Models\PlantingBatch;
 use App\Models\PreHarvestInspection;
@@ -18,6 +19,7 @@ class HarvestLotService
     {
         $this->eligibilityService->assertCanHarvest($batch, $data['harvest_date']);
         $this->assertGradeBreakdownIsValid($data);
+        $this->assertRejectReasonsAreValid($data);
 
         $inspection = PreHarvestInspection::where('planting_batch_id', $batch->id)
             ->where('status', 'approved')
@@ -70,6 +72,39 @@ class HarvestLotService
 
         if ($gradeTotal > $rawQuantity) {
             throw new InvalidArgumentException('Grade breakdown total cannot exceed raw_quantity.');
+        }
+    }
+
+    private function assertRejectReasonsAreValid(array $data): void
+    {
+        $rejectReasons = $data['reject_reasons'] ?? [];
+
+        if (empty($rejectReasons)) {
+            return;
+        }
+
+        $validReasons = RejectReason::values();
+        $invalidReasons = [];
+
+        foreach (array_keys($rejectReasons) as $reason) {
+            if (!in_array($reason, $validReasons, true)) {
+                $invalidReasons[] = $reason;
+            }
+        }
+
+        if (!empty($invalidReasons)) {
+            throw new InvalidArgumentException(
+                'Invalid reject reasons: ' . implode(', ', $invalidReasons)
+            );
+        }
+
+        $hasOther = isset($rejectReasons[RejectReason::OTHER->value]);
+        $hasNote = !empty($data['notes']);
+
+        if ($hasOther && !$hasNote) {
+            throw new InvalidArgumentException(
+                'Reject reason "other" requires a note for audit trail.'
+            );
         }
     }
 }

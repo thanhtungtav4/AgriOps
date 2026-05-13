@@ -123,8 +123,8 @@ This log tracks known issues, risks, and blockers that affect release readiness 
 | M3 | Task generation | ✅ | `task-06-work-task-schema.md`, `task-06-task-generation-service.md`, `task-06-work-task-api.md` |
 | M4 | Mobile log submission | 🟡 | `task-06-farming-log-foundation.md`, `task-06-work-task-log-api.md`; manual/mobile smoke pending |
 | M5 | Incident + chemical trace | ✅ | `task-07-incident-chemical-isolation.md` |
-| M6 | Isolation blocking | 🟡 | `task-07-incident-chemical-isolation.md`; harvest module integration pending |
-| M7 | Inspection → harvest | 🟡 | `task-08-pre-harvest-inspection.md`; harvest module integration pending |
+| M6 | Isolation blocking | ✅ | `task-07-incident-chemical-isolation.md`, `HarvestLotApiTest::test_active_isolation_blocks_harvest` |
+| M7 | Inspection → harvest | ✅ | `task-08-pre-harvest-inspection.md`, `HarvestLotApiTest` approved/rejected inspection gates |
 | M8 | Harvest grade math | ✅ | `task-09-harvest-lots.md` |
 | M9 | Packing multi-source | ✅ | `task-10-packing-api.md`, `PackingLotApiTest` |
 | M10 | QR privacy whitelist | ✅ | `task-11-green.log`, `PublicTraceabilityApiTest` |

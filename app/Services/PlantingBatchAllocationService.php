@@ -67,6 +67,47 @@ class PlantingBatchAllocationService
         $this->guardDuplicateAllocation($batch, $plot, $bedId);
     }
 
+    public function deallocate(
+        PlantingBatchAllocation $allocation,
+        ?string $reason = null,
+        ?int $userId = null
+    ): void {
+        $batch = $allocation->batch;
+        $farmId = $batch->farm_id;
+        $batchId = $allocation->planting_batch_id;
+        $plotId = $allocation->plot_id;
+        $bedId = $allocation->bed_id;
+        $allocatedAreaM2 = (float) $allocation->allocated_area_m2;
+
+        DB::transaction(function () use ($allocation, $plotId, $farmId, $batchId, $bedId, $allocatedAreaM2, $userId, $reason) {
+            $plot = $allocation->plot;
+            if ($plot && $plot->current_batch_id === $allocation->planting_batch_id) {
+                $hasOtherAllocations = PlantingBatchAllocation::where('id', '!=', $allocation->id)
+                    ->where('plot_id', $plotId)
+                    ->where('planting_batch_id', $allocation->planting_batch_id)
+                    ->exists();
+
+                if (!$hasOtherAllocations) {
+                    $plot->update(['current_batch_id' => null]);
+                }
+            }
+
+            $allocation->delete();
+
+            AuditEvent::recordAllocationRemoved(
+                farmId: $farmId,
+                allocationId: $allocation->id,
+                batchId: $batchId,
+                plotId: $plotId,
+                bedId: $bedId,
+                allocatedAreaM2: $allocatedAreaM2,
+                userId: $userId,
+                actorType: $userId ? 'user' : 'system',
+                reason: $reason,
+            );
+        });
+    }
+
     private function guardFarmMismatch(PlantingBatch $batch, Plot $plot): void
     {
         if ($batch->farm_id !== $plot->farm_id) {

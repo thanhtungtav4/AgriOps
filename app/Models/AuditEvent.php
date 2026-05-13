@@ -38,6 +38,7 @@ class AuditEvent extends Model
 
     public const TYPE_LIFECYCLE_TRANSITION = 'lifecycle_transition';
     public const TYPE_ALLOCATION_CREATED = 'allocation_created';
+    public const TYPE_ALLOCATION_REMOVED = 'allocation_removed';
 
     public function user(): BelongsTo
     {
@@ -104,6 +105,33 @@ class AuditEvent extends Model
             'plot_id' => $plotId,
             'bed_id' => $bedId,
             'allocated_area_m2' => $allocatedAreaM2,
+            'metadata' => $metadata,
+        ]);
+    }
+
+    public static function recordAllocationRemoved(
+        int $farmId,
+        int $allocationId,
+        int $batchId,
+        int $plotId,
+        ?int $bedId = null,
+        ?float $allocatedAreaM2 = null,
+        ?int $userId = null,
+        ?string $actorType = null,
+        ?string $reason = null,
+        ?array $metadata = null
+    ): self {
+        return self::create([
+            'event_type' => self::TYPE_ALLOCATION_REMOVED,
+            'entity_type' => 'PlantingBatchAllocation',
+            'entity_id' => $allocationId,
+            'user_id' => $userId,
+            'actor_type' => $actorType ?? 'user',
+            'farm_id' => $farmId,
+            'plot_id' => $plotId,
+            'bed_id' => $bedId,
+            'allocated_area_m2' => $allocatedAreaM2,
+            'reason' => $reason,
             'metadata' => $metadata,
         ]);
     }

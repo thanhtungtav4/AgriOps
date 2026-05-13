@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\RejectReason;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -48,7 +49,12 @@ class HarvestLot extends Model
         'status' => 'available',
     ];
 
+    protected $appends = [
+        'reject_reasons_summary',
+    ];
+
     public const STATUSES = ['available', 'reserved', 'packed', 'cancelled'];
+    public const VALID_REJECT_REASONS = RejectReason::VALUES;
 
     public function farm(): BelongsTo
     {
@@ -93,5 +99,20 @@ class HarvestLot extends Model
     public function packingSources(): HasMany
     {
         return $this->hasMany(PackingLotSource::class);
+    }
+
+    public function getRejectReasonsSummaryAttribute(): array
+    {
+        $reasons = $this->reject_reasons ?? [];
+
+        return array_map(function ($qty, $reason) {
+            $rejectReason = RejectReason::tryFrom($reason);
+
+            return [
+                'reason' => $reason,
+                'label' => $rejectReason?->label() ?? $reason,
+                'quantity' => (float) $qty,
+            ];
+        }, $reasons, array_keys($reasons));
     }
 }

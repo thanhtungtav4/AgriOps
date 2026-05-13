@@ -266,7 +266,7 @@ class AuditTrailTest extends TestCase
         $this->assertEquals($farm->id, $event->farm->id);
     }
 
-    public function test_audit_events_queryable_by_event_type(): void
+    public function test_deallocation_creates_audit_event(): void
     {
         Sanctum::actingAs(User::factory()->create(['role' => User::ROLE_FARM_MANAGER]));
 
@@ -275,15 +275,141 @@ class AuditTrailTest extends TestCase
         $batch = $this->createBatch($farm, $crop);
         $plot = $this->createPlot($farm);
 
-        $this->lifecycleService->transition($batch, 'approved');
-        $this->allocationService->allocate($batch, $plot);
-        $batch->refresh();
-        $this->lifecycleService->transition($batch, 'soil_prep');
+        $allocation = $this->allocationService->allocate($batch, $plot);
+        $this->assertEquals(1, AuditEvent::where('event_type', AuditEvent::TYPE_ALLOCATION_CREATED)->count());
 
-        $lifecycleEvents = AuditEvent::where('event_type', AuditEvent::TYPE_LIFECYCLE_TRANSITION)->get();
-        $allocationEvents = AuditEvent::where('event_type', AuditEvent::TYPE_ALLOCATION_CREATED)->get();
+        $this->allocationService->deallocate($allocation);
 
-        $this->assertEquals(2, $lifecycleEvents->count());
-        $this->assertEquals(1, $allocationEvents->count());
+        $this->assertEquals(1, AuditEvent::where('event_type', AuditEvent::TYPE_ALLOCATION_REMOVED)->count());
+        $event = AuditEvent::where('event_type', AuditEvent::TYPE_ALLOCATION_REMOVED)->first();
+        $this->assertEquals(AuditEvent::TYPE_ALLOCATION_REMOVED, $event->event_type);
+        $this->assertEquals('PlantingBatchAllocation', $event->entity_type);
+        $this->assertEquals($allocation->id, $event->entity_id);
+        $this->assertEquals($farm->id, $event->farm_id);
+        $this->assertEquals($plot->id, $event->plot_id);
+        $this->assertEquals('system', $event->actor_type);
+    }
+
+    public function test_deallocation_records_user_id_when_provided(): void
+    {
+        $user = User::factory()->create(['role' => User::ROLE_FARM_MANAGER]);
+        Sanctum::actingAs($user);
+
+        $farm = $this->createFarm();
+        $crop = $this->createCrop();
+        $batch = $this->createBatch($farm, $crop);
+        $plot = $this->createPlot($farm);
+
+        $allocation = $this->allocationService->allocate($batch, $plot);
+        $this->allocationService->deallocate($allocation, null, $user->id);
+
+        $event = AuditEvent::where('event_type', AuditEvent::TYPE_ALLOCATION_REMOVED)->first();
+        $this->assertEquals($user->id, $event->user_id);
+        $this->assertEquals('user', $event->actor_type);
+    }
+
+    public function test_deallocation_records_reason(): void
+    {
+        Sanctum::actingAs(User::factory()->create(['role' => User::ROLE_FARM_MANAGER]));
+
+        $farm = $this->createFarm();
+        $crop = $this->createCrop();
+        $batch = $this->createBatch($farm, $crop);
+        $plot = $this->createPlot($farm);
+
+        $allocation = $this->allocationService->allocate($batch, $plot);
+        $this->allocationService->deallocate($allocation, 'Plot no longer available for planting');
+
+        $event = AuditEvent::where('event_type', AuditEvent::TYPE_ALLOCATION_REMOVED)->first();
+        $this->assertEquals('Plot no longer available for planting', $event->reason);
+    }
+
+    public function test_deallocation_clears_plot_current_batch_id_when_last(): void
+    {
+        Sanctum::actingAs(User::factory()->create(['role' => User::ROLE_FARM_MANAGER]));
+
+        $farm = $this->createFarm();
+        $crop = $this->createCrop();
+        $batch = $this->createBatch($farm, $crop);
+        $plot = $this->createPlot($farm);
+
+        $allocation = $this->allocationService->allocate($batch, $plot);
+        $plot->refresh();
+        $this->assertEquals($batch->id, $plot->current_batch_id);
+
+        $this->allocationService->deallocate($allocation);
+        $plot->refresh();
+        $this->assertNull($plot->current_batch_id);
+    }
+
+    public function test_deallocation_preserves_plot_current_batch_when_other_allocations_exist(): void
+    {
+        Sanctum::actingAs(User::factory()->create(['role' => User::ROLE_FARM_MANAGER]));
+
+        $farm = $this->createFarm();
+        $crop = $this->createCrop();
+        $batch = $this->createBatch($farm, $crop);
+        $plot = $this->createPlot($farm);
+
+        $allocation1 = $this->allocationService->allocate($batch, $plot);
+        $bed = \App\Models\Bed::create([
+            'plot_id' => $plot->id,
+            'code' => 'BED-01',
+            'length_m' => 10,
+            'width_m' => 1,
+            'area_m2' => 10,
+            'expected_plants' => 100,
+            'status' => 'available',
+        ]);
+        $allocation2 = $this->allocationService->allocate($batch, $plot, [], $bed->id);
+
+        $plot->refresh();
+        $this->assertEquals($batch->id, $plot->current_batch_id);
+
+        $this->allocationService->deallocate($allocation1);
+        $plot->refresh();
+        $this->assertEquals($batch->id, $plot->current_batch_id);
+
+        $this->allocationService->deallocate($allocation2);
+        $plot->refresh();
+        $this->assertNull($plot->current_batch_id);
+    }
+
+    public function test_multiple_allocations_and_deallocations_create_correct_events(): void
+    {
+        Sanctum::actingAs(User::factory()->create(['role' => User::ROLE_FARM_MANAGER]));
+
+        $farm = $this->createFarm();
+        $crop = $this->createCrop();
+        $batch = $this->createBatch($farm, $crop);
+        $plot1 = $this->createPlot($farm);
+        $plot2 = $this->createPlot($farm);
+
+        $allocation1 = $this->allocationService->allocate($batch, $plot1);
+        $allocation2 = $this->allocationService->allocate($batch, $plot2);
+
+        $this->assertEquals(2, AuditEvent::where('event_type', AuditEvent::TYPE_ALLOCATION_CREATED)->count());
+
+        $this->allocationService->deallocate($allocation1);
+        $this->assertEquals(1, AuditEvent::where('event_type', AuditEvent::TYPE_ALLOCATION_REMOVED)->count());
+
+        $this->allocationService->deallocate($allocation2);
+        $this->assertEquals(2, AuditEvent::where('event_type', AuditEvent::TYPE_ALLOCATION_REMOVED)->count());
+    }
+
+    public function test_allocation_removed_event_includes_allocated_area(): void
+    {
+        Sanctum::actingAs(User::factory()->create(['role' => User::ROLE_FARM_MANAGER]));
+
+        $farm = $this->createFarm();
+        $crop = $this->createCrop();
+        $batch = $this->createBatch($farm, $crop);
+        $plot = $this->createPlot($farm, 'available', 200);
+
+        $allocation = $this->allocationService->allocate($batch, $plot, ['allocated_area_m2' => 150]);
+        $this->allocationService->deallocate($allocation);
+
+        $event = AuditEvent::where('event_type', AuditEvent::TYPE_ALLOCATION_REMOVED)->first();
+        $this->assertEquals(150, $event->allocated_area_m2);
     }
 }

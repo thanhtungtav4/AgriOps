@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\ChemicalUsage;
 use App\Models\Crop;
+use App\Enums\RejectReason;
 use App\Models\Farm;
 use App\Models\HarvestLot;
 use App\Models\PlantingBatch;
@@ -64,7 +65,10 @@ class HarvestLotApiTest extends TestCase
             'grade_b_quantity' => 10,
             'grade_c_quantity' => 5,
             'reject_quantity' => 5,
-            'reject_reasons' => ['pest_damage' => 3, 'deformed' => 2],
+            'reject_reasons' => [
+                RejectReason::DISEASE_PEST_DAMAGE->value => 3,
+                RejectReason::DEFORMED->value => 2,
+            ],
             'notes' => 'First harvest.',
         ]);
 
@@ -72,7 +76,7 @@ class HarvestLotApiTest extends TestCase
             ->assertJsonPath('data.planting_batch_id', $this->batch->id)
             ->assertJsonPath('data.raw_quantity', '100.000')
             ->assertJsonPath('data.grade_a_quantity', '80.000')
-            ->assertJsonPath('data.reject_reasons.pest_damage', 3);
+            ->assertJsonPath('data.reject_reasons.disease_pest_damage', 3);
 
         $this->batch->refresh();
         $this->assertEquals('harvesting', $this->batch->status);
@@ -218,5 +222,144 @@ class HarvestLotApiTest extends TestCase
                 ['key' => 'maturity', 'label' => 'Maturity', 'passed' => false],
             ],
         ]);
+    }
+
+    public function test_accepts_valid_canonical_reject_reasons(): void
+    {
+        Sanctum::actingAs($this->manager);
+        $this->approveBatchForHarvest();
+
+        $response = $this->postJson('/api/v1/harvest-lots', [
+            'planting_batch_id' => $this->batch->id,
+            'harvest_date' => '2026-05-15',
+            'raw_quantity' => 100,
+            'grade_a_quantity' => 80,
+            'grade_b_quantity' => 10,
+            'grade_c_quantity' => 5,
+            'reject_quantity' => 5,
+            'reject_reasons' => [
+                RejectReason::DISEASE_PEST_DAMAGE->value => 2,
+                RejectReason::PHYSICAL_DAMAGE->value => 1.5,
+                RejectReason::SIZE_WEIGHT_OUT_OF_SPEC->value => 1,
+                RejectReason::OVERRIPE->value => 0.5,
+            ],
+            'notes' => 'Test harvest with canonical reject reasons.',
+        ]);
+
+        $response->assertStatus(201)
+            ->assertJsonPath('data.reject_reasons.disease_pest_damage', 2)
+            ->assertJsonPath('data.reject_reasons.physical_damage', 1.5)
+            ->assertJsonPath('data.reject_reasons.size_weight_out_of_spec', 1)
+            ->assertJsonPath('data.reject_reasons.overripe', 0.5);
+    }
+
+    public function test_rejects_invalid_reject_reason(): void
+    {
+        Sanctum::actingAs($this->manager);
+        $this->approveBatchForHarvest();
+
+        $response = $this->postJson('/api/v1/harvest-lots', [
+            'planting_batch_id' => $this->batch->id,
+            'harvest_date' => '2026-05-15',
+            'raw_quantity' => 100,
+            'grade_a_quantity' => 80,
+            'grade_b_quantity' => 10,
+            'grade_c_quantity' => 5,
+            'reject_quantity' => 5,
+            'reject_reasons' => [
+                'disease_pest_damage' => 2,
+                'random_free_text_reason' => 3,
+            ],
+            'notes' => 'Test harvest with invalid reject reason.',
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonPath('error.code', 'HARVEST_VALIDATION_FAILED')
+            ->assertJsonPath('error.message', 'Invalid reject reasons: random_free_text_reason');
+
+        $this->assertEquals(0, HarvestLot::count());
+    }
+
+    public function test_reject_reason_other_requires_note(): void
+    {
+        Sanctum::actingAs($this->manager);
+        $this->approveBatchForHarvest();
+
+        $response = $this->postJson('/api/v1/harvest-lots', [
+            'planting_batch_id' => $this->batch->id,
+            'harvest_date' => '2026-05-15',
+            'raw_quantity' => 100,
+            'grade_a_quantity' => 80,
+            'grade_b_quantity' => 10,
+            'grade_c_quantity' => 5,
+            'reject_quantity' => 5,
+            'reject_reasons' => [
+                RejectReason::OTHER->value => 5,
+            ],
+            'notes' => null,
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonPath('error.code', 'HARVEST_VALIDATION_FAILED');
+
+        $this->assertEquals(0, HarvestLot::count());
+    }
+
+    public function test_grade_breakdown_totals_against_raw_quantity(): void
+    {
+        Sanctum::actingAs($this->manager);
+        $this->approveBatchForHarvest();
+
+        $response = $this->postJson('/api/v1/harvest-lots', [
+            'planting_batch_id' => $this->batch->id,
+            'harvest_date' => '2026-05-15',
+            'raw_quantity' => 100,
+            'grade_a_quantity' => 80,
+            'grade_b_quantity' => 10,
+            'grade_c_quantity' => 5,
+            'reject_quantity' => 10,
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonPath('error.code', 'HARVEST_VALIDATION_FAILED')
+            ->assertJsonPath('error.message', 'Grade breakdown total cannot exceed raw_quantity.');
+    }
+
+    public function test_reject_reason_reporting_aggregates_correctly(): void
+    {
+        Sanctum::actingAs($this->manager);
+        $this->approveBatchForHarvest();
+
+        $response = $this->postJson('/api/v1/harvest-lots', [
+            'planting_batch_id' => $this->batch->id,
+            'harvest_date' => '2026-05-15',
+            'raw_quantity' => 100,
+            'grade_a_quantity' => 70,
+            'grade_b_quantity' => 10,
+            'grade_c_quantity' => 5,
+            'reject_quantity' => 15,
+            'reject_reasons' => [
+                RejectReason::DISEASE_PEST_DAMAGE->value => 5,
+                RejectReason::COLOR_MATURITY_OUT_OF_SPEC->value => 4,
+                RejectReason::CONTAMINATION->value => 3,
+                RejectReason::SIZE_WEIGHT_OUT_OF_SPEC->value => 2,
+                RejectReason::UNDERRIPE->value => 1,
+            ],
+        ]);
+
+        $response->assertStatus(201);
+
+        $rejectReasons = $response->json('data.reject_reasons');
+        $rejectReasonSummary = $response->json('data.reject_reasons_summary');
+
+        $totalFromReasons = array_sum(array_values($rejectReasons));
+        $this->assertEquals(15, $totalFromReasons);
+        $this->assertEquals(5, $rejectReasons[RejectReason::DISEASE_PEST_DAMAGE->value]);
+        $this->assertEquals(4, $rejectReasons[RejectReason::COLOR_MATURITY_OUT_OF_SPEC->value]);
+        $this->assertEquals(3, $rejectReasons[RejectReason::CONTAMINATION->value]);
+        $this->assertEquals(2, $rejectReasons[RejectReason::SIZE_WEIGHT_OUT_OF_SPEC->value]);
+        $this->assertEquals(1, $rejectReasons[RejectReason::UNDERRIPE->value]);
+        $this->assertEquals('Disease/Pest Damage', $rejectReasonSummary[0]['label']);
+        $this->assertEquals(5.0, $rejectReasonSummary[0]['quantity']);
     }
 }

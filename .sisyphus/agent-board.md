@@ -98,7 +98,7 @@ Runbook:
 - `.sisyphus/run-opencode-agents.sh`
 ## Current Priority
 
-Priority 1: Start Task 10 processing + packing lot mixing + traceability source graph.
+Priority 1: Continue MVP-1 release hardening and close remaining accepted evidence gaps.
 
 Current verification:
 
@@ -108,14 +108,16 @@ Current verification:
 - Task 6 work task/log/photo APIs pass.
 - Task 7 incident/chemical/biological usage and isolation guard tests pass.
 - Task 8 pre-harvest inspection and harvest eligibility tests pass.
-- Task 9 harvest lots and grade breakdown tests pass.
-- Full suite passes cleanly: `281 tests, 963 assertions`.
+- Task 9 harvest lots, grade breakdown, and canonical reject taxonomy tests pass.
+- Task 10 processing/packing and Task 11 QR privacy tests pass.
+- Audit hooks cover lifecycle transitions plus allocation create/remove.
+- Full suite passes cleanly: `292 tests, 1005 assertions`.
 
 Next likely work:
 
-- Start Task 11 public QR traceability page from actual packing data.
-- Add audit/event hooks for lifecycle transitions and allocation changes.
-- Continue QR/privacy work after harvest/packing data exists.
+- Run device-level mobile smoke for task receive -> log -> photo when a device/emulator is available.
+- Capture staging PostgreSQL migration evidence with owner credentials.
+- Continue API error-contract cleanup for deferred approval endpoints.
 
 ## Workstream Briefs
 

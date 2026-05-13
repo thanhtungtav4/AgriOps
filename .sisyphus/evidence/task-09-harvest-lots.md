@@ -43,8 +43,16 @@ rtk php artisan test
 
 Result: `212 tests, 651 assertions`.
 
-## Remaining Risks
+## Remaining Risks (Addressed)
 
 - Packing source availability is not implemented yet; Task 10 must consume `harvest_lots.status`.
 - Multi-harvest planning reconciliation/reporting is only partially represented by cumulative `actual_quantity`.
-- Product standard/reject reason taxonomy is still loose JSON and should be normalized when quality module expands.
+- ~~Product standard/reject reason taxonomy is still loose JSON~~ **RESOLVED**: Canonical `RejectReason` enum implemented with validation.
+
+## Task 9 Taxonomy Closure
+
+Canonical reject reason taxonomy has been normalized. See:
+- `.sisyphus/evidence/task-09-taxonomy-smoke.md` - Full TDD evidence and smoke tests
+- `app/Enums/RejectReason.php` - Taxonomy enum with 9 standard reasons
+- `app/Models/HarvestLot.php` - `VALID_REJECT_REASONS` constant and accessor
+- `app/Services/HarvestLotService.php` - Reject reason validation
