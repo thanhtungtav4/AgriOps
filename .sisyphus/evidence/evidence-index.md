@@ -1,0 +1,292 @@
+# Evidence Index - AgriOps MVP-0/MVP-1
+
+**Generated:** 2026-05-12
+**Agent:** E - QA/Evidence
+**Project:** /Users/macbook/Herd/ariops
+**Last Updated:** 2026-05-13
+
+---
+
+## Purpose
+
+This index catalogs all evidence artifacts in `.sisyphus/evidence/` for:
+- Auditability: Find who created what and when
+- Traceability: Map artifacts to BRD requirements and plan tasks
+- Coverage: Identify missing evidence gaps
+- Release readiness: Verify gate criteria are met
+
+---
+
+## Artifact Directory
+
+**Location:** `/Users/macbook/Herd/ariops/.sisyphus/evidence/`
+
+---
+
+## MVP-0 Evidence Artifacts (T1-T4)
+
+### Database Architecture (Task 1)
+
+| File | Type | Created | Purpose | Owner | Status |
+|------|------|---------|---------|-------|--------|
+| `task-01-migration.log` | Log | 2026-05-12 | Migration fresh run evidence | Agent B | ✅ |
+| `task-01-db-architecture-qc.log` | Log | 2026-05-12 | DB architecture analysis (FK, index, enum) | Agent B | ✅ |
+| `data-dictionary-baseline.md` | Spec | 2026-05-12 | Field-by-field dictionary for MVP-0 tables | Agent B | ✅ |
+| `final-f2c-db-architecture.md` | Checklist | 2026-05-12 | PostgreSQL constraint/index recommendation | Agent B | ✅ |
+| `seed-strategy.md` | Spec | 2026-05-12 | Canonical + negative seed data specification | Agent B | ✅ |
+| `final-f2b-data-quality.log` | Spec | 2026-05-12 | SQL integrity check proposal | Agent B | ✅ |
+
+### Auth + RBAC (Task 2)
+
+| File | Type | Created | Purpose | Owner | Status |
+|------|------|---------|---------|-------|--------|
+| `task-02-auth-happy.log` | Log | 2026-05-12 | Auth smoke test evidence | Agent C | ✅ |
+| `rbac-matrix-v1.md` | Spec | 2026-05-12 | RBAC permission matrix (resource × action × role) | Agent C | 🟡 |
+| `api-error-contract-v1.md` | Spec | 2026-05-12 | API error schema standard v1 | Agent C | 🟡 |
+| `final-f3c-security-privacy.md` | Audit | 2026-05-12 | Security gap analysis | Agent C | ⚠️ |
+
+### Master Data (Task 3)
+
+| File | Type | Created | Purpose | Owner | Status |
+|------|------|---------|---------|-------|--------|
+| `task-03-master-happy.log` | Log | 2026-05-12 | Master data CRUD smoke evidence | Agent A | ✅ |
+
+### Planning (Task 4)
+
+| File | Type | Created | Purpose | Owner | Status |
+|------|------|---------|---------|-------|--------|
+| `task-04-green.log` | Log | 2026-05-12 | Planning tests passing (5 tests, 52 assertions) | Agent A | ✅ |
+| `task-04-red.log` | Log | 2026-05-12 | TDD RED phase evidence | Agent A | 🔴 |
+| `task-04-refactor.log` | Log | 2026-05-12 | Refactor phase evidence | Agent A | ✅ |
+| `task-04-migration.log` | Log | 2026-05-12 | T4 migration evidence | Agent A | ✅ |
+| `task-04-routes.log` | Log | 2026-05-12 | T4 routes registration evidence | Agent A | ✅ |
+| `task-04-tdd-trace.md` | Trace | 2026-05-12 | TDD cycle documentation | Agent A | ✅ |
+| `task-04-planning-formula-spec.md` | Spec | 2026-05-12 | Planning formula contract | Agent A | ✅ |
+
+### QA Evidence Files (Agent E)
+
+| File | Type | Created | Purpose | Owner | Status |
+|------|------|---------|---------|-------|--------|
+| `final-f1b-qa-traceability.md` | Matrix | 2026-05-12 | BRD→Task→Test→Gate matrix | Agent E | ✅ |
+| `smoke-mvp0.md` | Checklist | 2026-05-12 | MVP-0 smoke test checklist | Agent E | ✅ |
+| `smoke-mvp1.md` | Checklist | 2026-05-12 | MVP-1 demand-to-QR smoke checklist | Agent E | ✅ |
+| `mvp0-smoke-run.md` | Evidence | 2026-05-12 | Actual MVP-0 smoke test run evidence | Agent E | ✅ |
+| `final-f4b-business-architecture.md` | Spec | 2026-05-12 | Business architecture guardrails | Agent D | ✅ |
+| `business-rules-v1.md` | Spec | 2026-05-12 | Detailed business rules and override governance | Agent D | ✅ |
+| `security-scope-implementation.md` | Evidence | 2026-05-12 | Farm scope, token policy, and API security implementation | Agent C2 | ✅ |
+| `seed-postgres-evidence.md` | Evidence | 2026-05-12 | Idempotent seeders and local PostgreSQL evidence | Agent B2 | ✅ |
+| `task-05-batch-foundation.md` | Evidence | 2026-05-12 | Planting batch/allocation schema, models, and tests | Agent F | ✅ |
+| `task-05-lifecycle-api.md` | Evidence | 2026-05-13 | Planting batch API and lifecycle transition service | Agent G | ✅ |
+| `task-05-allocation-guards.md` | Evidence | 2026-05-13 | Allocation guard service and tests | Agent H | ✅ |
+| `mvp0-hardening.md` | Evidence | 2026-05-13 | Login throttling and Task 4 TDD trace hardening | Agent I | ✅ |
+| `task-06-work-task-schema.md` | Evidence | 2026-05-13 | Work task schema, model relationships, and schema tests | Agent J | ✅ |
+| `task-06-task-generation-service.md` | Evidence | 2026-05-13 | Work task generation from growth stages with allocation guards | Agent K / Integrator | ✅ |
+| `task-06-work-task-api.md` | Evidence | 2026-05-13 | Work task list/show/generate/status API and farm-scope tests | Agent L / Integrator | ✅ |
+| `task-06-farming-log-foundation.md` | Evidence | 2026-05-13 | Farming log schema/model foundation and relationship tests | Agent M / Integrator | ✅ |
+| `task-06-work-task-log-api.md` | Evidence | 2026-05-13 | Work task farming log submission API and validation tests | Integrator | ✅ |
+| `task-07-incident-chemical-isolation.md` | Evidence | 2026-05-13 | Incident API, chemical/biological usage API, and isolation guard tests | Integrator | ✅ |
+| `task-08-pre-harvest-inspection.md` | Evidence | 2026-05-13 | Pre-harvest inspection API, approval gate, and harvest eligibility tests | Integrator | ✅ |
+| `task-09-harvest-lots.md` | Evidence | 2026-05-13 | Harvest lot API, grade breakdown, and eligibility guard tests | Integrator | ✅ |
+
+---
+
+## MVP-1 Evidence Artifacts (T5-T11)
+
+| File | Type | Purpose | Owner | Status |
+|------|------|---------|-------|--------|
+| `task-05-batch-foundation.md` | Evidence | Batch/allocation schema and model foundation | Agent F | ✅ |
+| `task-05-lifecycle-api.md` | Evidence | Batch lifecycle API/service tests | Agent G | ✅ |
+| `task-05-allocation-guards.md` | Evidence | Allocation guard service tests | Agent H | ✅ |
+| `task-06-work-task-schema.md` | Evidence | Work task schema/model tests | Agent J | ✅ |
+| `task-06-task-generation-service.md` | Evidence | Work task generation service tests | Agent K / Integrator | ✅ |
+| `task-06-work-task-api.md` | Evidence | Work task list/show/generate/status API tests | Agent L / Integrator | ✅ |
+| `task-06-farming-log-foundation.md` | Evidence | Farming log schema/model foundation tests | Agent M / Integrator | ✅ |
+| `task-06-work-task-log-api.md` | Evidence | Work task log API, binary photo upload, and validation tests | Integrator | ✅ |
+| `task-06-task-log-happy.log` | Log | Manual/mobile photo upload happy path | TBD | 🟡 |
+| `task-06-task-log-validation.log` | Log | Manual/mobile photo upload validation errors | TBD | 🟡 |
+| `task-07-incident-chemical-isolation.md` | Evidence | Incident + chemical usage trace and isolation guard tests | Integrator | ✅ |
+| `task-07-chemical-trace.log` | Log | Manual/API incident + chemical usage trace smoke | TBD | 🟡 |
+| `task-07-isolation-block.log` | Log | Manual/API isolation guard smoke | TBD | 🟡 |
+| `task-08-pre-harvest-inspection.md` | Evidence | Inspection pass/fail and harvest eligibility gate tests | Integrator | ✅ |
+| `task-08-inspection-pass.log` | Log | Manual/API inspection pass smoke | TBD | 🟡 |
+| `task-08-inspection-fail.log` | Log | Manual/API inspection fail smoke | TBD | 🟡 |
+| `task-09-harvest-lots.md` | Evidence | Harvest with grade breakdown and validation tests | Integrator | ✅ |
+| `task-09-harvest-happy.log` | Log | Manual/API harvest happy path smoke | TBD | 🟡 |
+| `task-09-harvest-validation.log` | Log | Manual/API harvest validation smoke | TBD | 🟡 |
+| `task-10-packing-mix.log` | Log | Packing lot with multiple sources | TBD | 🔴 |
+| `task-10-packing-source-invalid.log` | Log | Invalid packing source rejection | TBD | 🔴 |
+| `task-11-qr-public.log` | Log | QR public endpoint evidence | TBD | 🔴 |
+| `task-11-qr-privacy.log` | Log | QR privacy whitelist test | TBD | 🔴 |
+
+---
+
+## MVP-2 Evidence Artifacts (T12-T14) - NOT YET CREATED
+
+| File | Type | Purpose | Owner | Status |
+|------|------|---------|-------|--------|
+| `task-12-delivery-revenue.log` | Log | Delivery → revenue calculation | TBD | 🔴 |
+| `task-12-return-flow.log` | Log | Return flow evidence | TBD | 🔴 |
+| `task-13-margin-happy.log` | Log | Cost/margin calculation | TBD | 🔴 |
+| `task-13-cost-validation.log` | Log | Cost record validation | TBD | 🔴 |
+| `task-14-alert-happy.log` | Log | Alert generation | TBD | 🔴 |
+
+---
+
+## Evidence Artifact Types
+
+| Type | Extension | Description |
+|------|-----------|-------------|
+| **Log** | `.log` | Test run output, command output, execution evidence |
+| **Spec** | `.md` | Design specification, contract, standard |
+| **Matrix** | `.md` | Cross-cutting traceability mapping |
+| **Trace** | `.md` | TDD cycle documentation |
+| **Checklist** | `.md` | Verification checklist |
+| **Audit** | `.md` | Security/compliance audit findings |
+
+---
+
+## Evidence by BRD Section
+
+| BRD Section | Artifact(s) | Status |
+|------------|-------------|--------|
+| BRD 4 (Roles) | `rbac-matrix-v1.md`, `task-02-auth-happy.log` | 🟡 |
+| BRD 5 (Farm/Plot/Bed) | `task-01-*.log`, `data-dictionary-baseline.md` | ✅ |
+| BRD 6-7 (Crop/Variety) | `task-03-master-happy.log`, `data-dictionary-baseline.md` | ✅ |
+| BRD 8 (Norms) | `data-dictionary-baseline.md`, `final-f2c-db-architecture.md` | ✅ |
+| BRD 11-12 (Planning) | `task-04-*.log`, `task-04-planning-formula-spec.md` | ✅ |
+| BRD 19 (QR) | `final-f3c-security-privacy.md` (design) | ⚠️ |
+| BRD 28 (DB) | `final-f2c-db-architecture.md`, `seed-strategy.md` | ✅ |
+
+---
+
+## Evidence by Plan Task
+
+| Task | Artifacts | Status |
+|------|-----------|--------|
+| T1 (Data Foundation) | 6 files | ✅ |
+| T2 (Auth + RBAC) | 4 files | 🟡 |
+| T3 (Master Data) | 1 file | ✅ |
+| T4 (Planning) | 7 files | ✅ |
+| T5 (Planting Batch Lifecycle) | 3 files | 🟡 |
+| T6 (Work Task & Farming Log) | 5 files | 🟡 |
+| T7 (Incident + Chemical Isolation) | 1 file | 🟡 |
+| T8 (Pre-harvest Inspection) | 1 file | 🟡 |
+| T9 (Harvest Lots) | 1 file | 🟡 |
+| T10-T14 (MVP-1/2 remaining) | 0 files | 🔴 |
+
+---
+
+## Coverage Assessment
+
+### HIGH Coverage (Evidence Complete)
+- Database architecture and migrations (T1)
+- Auth basic functionality (T2)
+- Master data CRUD (T3)
+- Planning calculation and formula (T4)
+
+### MEDIUM Coverage (Evidence Partial)
+- RBAC permission matrix (T2) - Design complete, implementation not verified
+- API error contract (T2) - Spec complete, enforcement not tested
+
+### LOW Coverage (Evidence Gaps)
+- Security/farm isolation (T2) - Gap identified, not fixed
+- T5 audit trail evidence - Lifecycle/allocation exist; audit trail still pending
+- T6 manual/mobile smoke evidence - Work task/log APIs and binary upload tests exist; manual device/API smoke logs still pending
+- T7 manual/API smoke evidence - isolation service is wired into T9 harvest creation; manual/API smoke logs still pending
+- T8 manual/API smoke evidence - pre-harvest inspection gate is wired into T9 harvest creation; manual/API smoke logs still pending
+- T9 packing integration evidence - harvest lot API exists; T10 packing must consume available harvest lots
+- T10-T14 MVP-1/2 downstream modules - No evidence created
+- All MVP-2 tasks (T12-T14) - No evidence created
+
+### NO Coverage
+- TDD RED phases for T5-T14
+- E2E smoke tests for demand → QR path
+- Regression tests for any MVP-1+ features
+
+---
+
+## Missing Evidence Gaps
+
+### CRITICAL (Block Release)
+
+1. **Farm scope isolation tests** - No test proves User A cannot see Farm B data
+2. **RBAC controller enforcement** - Policy exists but not enforced on controllers
+3. **QR privacy whitelist test** - Required before QR public ships
+
+### HIGH (Should Close Before MVP-1)
+
+4. **Batch lifecycle audit trail tests** - T5 lifecycle/guard tests exist; audit event tests still pending
+5. **Chemical isolation guard smoke evidence** - T9 harvest creation consumes the guard; manual/API smoke logs still pending
+6. **PostgreSQL staging migration** - Only SQLite/local tested
+7. **Planning TDD RED log** - `task-04-red.log` exists but is incomplete
+
+### MEDIUM (MVP Hardening)
+
+8. **Token expiry/revoke tests** - Not tested
+9. **API error contract enforcement** - Inconsistent across controllers
+10. **Negative seed execution** - Strategy documented, not run
+11. **Canonical seed execution** - Strategy documented, partially run
+
+---
+
+## Evidence Storage Conventions
+
+### File Naming
+```
+{task}-{phase}-{description}.{ext}
+
+Examples:
+- task-04-green.log        (TDD GREEN phase)
+- task-04-planning-formula-spec.md  (T4 spec)
+- final-f1b-qa-traceability.md      (QA matrix)
+```
+
+### Required Front Matter
+```markdown
+**Generated:** YYYY-MM-DD
+**Agent:** [Agent Letter] - [Role]
+**Project:** /path/to/project
+**Status:** DRAFT|IN PROGRESS|COMPLETE|BLOCKED
+```
+
+### Evidence Path Convention
+All evidence must be stored in `.sisyphus/evidence/` with relative paths from project root.
+
+---
+
+## Verification Commands
+
+### List All Evidence
+```bash
+ls -la /Users/macbook/Herd/ariops/.sisyphus/evidence/
+```
+
+### Count Evidence Files by Type
+```bash
+ls .sisyphus/evidence/*.log | wc -l  # Logs
+ls .sisyphus/evidence/*.md | wc -l     # Docs
+```
+
+### Check Evidence Completeness
+```bash
+# Check for missing TDD traces
+ls task-*-red.log | wc -l
+ls task-*-green.log | wc -l
+
+# Check for MVP-1 evidence
+ls task-0[5-9]-*.log 2>/dev/null | wc -l
+ls task-1[0-4]-*.log 2>/dev/null | wc -l
+```
+
+---
+
+## Next Actions
+
+1. **Create missing MVP-1 evidence files** as each task is implemented
+2. **Verify PostgreSQL staging migration** before MVP-1 entry
+3. **Add farm scope isolation tests** before MVP-1 entry
+4. **Update this index** when new evidence is created
+
+---
+
+**End of Evidence Index**
