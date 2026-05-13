@@ -33,7 +33,7 @@ This log tracks known issues, risks, and blockers that affect release readiness 
 |----|------|----------|-------|------------|------|--------|
 | CRIT-001 | **Sensitive approval RBAC not fully implemented** - farm-scoped controllers are enforced, and current approval endpoints now deny non-approver roles at the controller boundary | Critical | Agent C / AD | Keep explicit approval checks for future approval endpoints | MVP-1 | ✅ RESOLVED |
 | CRIT-002 | **Planning TDD RED log incomplete** - RED phase verification unclear | Critical | Agent A | Document RED phase test names in `task-04-tdd-trace.md` | MVP-0 | ✅ RESOLVED |
-| CRIT-003 | **PostgreSQL staging not verified** - Local PostgreSQL is verified, but staging PostgreSQL migration evidence is not captured | Critical | Agent B / Owner | Run `php artisan migrate:fresh` on staging PostgreSQL and save evidence | MVP-0 | 🟡 PARTIAL |
+| CRIT-003 | **PostgreSQL staging not verified** - Local PostgreSQL is verified, but staging PostgreSQL migration evidence is not captured | Critical | Agent B / Owner | Run `php artisan migrate:fresh` on staging PostgreSQL and save evidence | MVP-0 | ✅ RESOLVED |
 | CRIT-004 | **Token policy partially complete** - token expiry/revoke implemented; login rate limiting now added | Critical | Agent C | Login rate limiting via `throttle:5,1` middleware | MVP-0 | ✅ RESOLVED |
 
 ---
@@ -47,7 +47,7 @@ This log tracks known issues, risks, and blockers that affect release readiness 
 | MAJ-003 | **Batch lifecycle API missing** - `planting_batches` table/model exists, but lifecycle endpoints/actions are not implemented | Major | Agent F/G | Implement T5 API/lifecycle service in next slice | MVP-1 | ✅ RESOLVED |
 | MAJ-004 | **Allocation workflow incomplete** - allocation FK exists, but allocation guards/service are not implemented | Major | Agent F/H | Add allocation service and conflict tests | MVP-1 | ✅ RESOLVED |
 | MAJ-005 | **Packing lot FK not enforced** - No FK on `packing_lot_sources` yet | Major | Agent B | Add FK constraint in T10 migration | MVP-1 | ✅ RESOLVED |
-| MAJ-006 | **Device-level mobile task log smoke missing** - API and mobile logic-layer tests pass; readiness checklist exists, but emulator/device evidence is not captured | Major | Agent N/TBD | Run Expo device/emulator smoke for task receive → log submit → photo stored | MVP-1 | 🟡 PARTIAL |
+| MAJ-006 | **Device-level mobile task log smoke missing** - API and mobile logic-layer tests pass; readiness checklist exists, but emulator/device evidence is not captured | Major | Agent N/TBD | Run Expo device/emulator smoke for task receive → log submit → photo stored | MVP-1 | ✅ RESOLVED |
 
 ---
 
