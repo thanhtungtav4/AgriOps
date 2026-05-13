@@ -111,9 +111,9 @@ Current verification:
 - Task 9 harvest lots, grade breakdown, and canonical reject taxonomy tests pass.
 - Task 10 processing/packing and Task 11 QR privacy tests pass.
 - Audit hooks cover lifecycle transitions plus allocation create/remove.
-- API error contract has additional crop lookup and planning domain-error coverage.
-- Mobile logic-layer smoke covers task receive/status/log/photo and offline conflict handling.
-- Full suite passes cleanly: `295 tests, 1036 assertions`.
+- API error contract has additional crop lookup, planning domain-error, validation, and throttle coverage.
+- Mobile logic-layer smoke covers task receive/status/log/photo and offline conflict handling; device readiness evidence documents the remaining emulator/device blocker.
+- Full suite passes cleanly: `298 tests, 1062 assertions`.
 
 Next likely work:
 

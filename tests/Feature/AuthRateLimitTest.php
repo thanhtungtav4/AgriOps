@@ -50,7 +50,7 @@ class AuthRateLimitTest extends TestCase
 
         $response->assertStatus(429);
         $response->assertJsonStructure([
-            'message',
+            'error' => ['code', 'message', 'trace_id'],
         ]);
     }
 
@@ -100,8 +100,7 @@ class AuthRateLimitTest extends TestCase
         ]);
 
         $response->assertStatus(429);
-        $response->assertJson([
-            'message' => 'Too Many Attempts.',
-        ]);
+        $response->assertJsonPath('error.code', 'AUTH_RATE_LIMITED');
+        $response->assertJsonPath('error.message', 'Too Many Attempts.');
     }
 }

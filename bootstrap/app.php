@@ -19,5 +19,36 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (\Illuminate\Validation\ValidationException $e, $request) {
+            if ($request->expectsJson()) {
+                $errors = $e->errors();
+                $firstField = array_key_first($errors);
+                $firstMessage = $errors[$firstField][0] ?? 'Validation failed.';
+
+                return new \Illuminate\Http\JsonResponse([
+                    'error' => [
+                        'code' => 'VALIDATION_REQUIRED',
+                        'message' => $firstMessage,
+                        'details' => [
+                            'field' => $firstField,
+                            'errors' => $errors,
+                        ],
+                        'trace_id' => $request->header('X-Trace-ID') ?? uniqid(),
+                    ],
+                    'errors' => $errors,
+                ], 422);
+            }
+        });
+
+        $exceptions->render(function (\Illuminate\Http\Exceptions\ThrottleRequestsException $e, $request) {
+            if ($request->expectsJson()) {
+                return new \Illuminate\Http\JsonResponse([
+                    'error' => [
+                        'code' => 'AUTH_RATE_LIMITED',
+                        'message' => $e->getMessage() ?: 'Too Many Attempts.',
+                        'trace_id' => $request->header('X-Trace-ID') ?? uniqid(),
+                    ],
+                ], 429);
+            }
+        });
     })->create();

@@ -103,6 +103,7 @@ class SupplyInputApiTest extends TestCase
             'end_date' => '2026-06-01',
         ])
             ->assertUnprocessable()
-            ->assertJsonValidationErrors(['end_date']);
+            ->assertJsonValidationErrors(['end_date'])
+            ->assertJsonPath('error.details.field', 'end_date');
     }
 }

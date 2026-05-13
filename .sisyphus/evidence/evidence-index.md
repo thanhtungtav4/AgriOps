@@ -75,6 +75,7 @@ This index catalogs all evidence artifacts in `.sisyphus/evidence/` for:
 | `business-rules-v1.md` | Spec | 2026-05-12 | Detailed business rules and override governance | Agent D | ✅ |
 | `security-scope-implementation.md` | Evidence | 2026-05-12 | Farm scope, token policy, and API security implementation | Agent C2 | ✅ |
 | `seed-postgres-evidence.md` | Evidence | 2026-05-12 | Idempotent seeders and local PostgreSQL evidence | Agent B2 | ✅ |
+| `postgres-evidence-continuation.md` | Evidence | 2026-05-13 | Local PostgreSQL migration status and staging-owner gate | Agent AB / Integrator | ✅ |
 | `task-05-batch-foundation.md` | Evidence | 2026-05-12 | Planting batch/allocation schema, models, and tests | Agent F | ✅ |
 | `task-05-lifecycle-api.md` | Evidence | 2026-05-13 | Planting batch API and lifecycle transition service | Agent G | ✅ |
 | `task-05-allocation-guards.md` | Evidence | 2026-05-13 | Allocation guard service and tests | Agent H | ✅ |
@@ -105,6 +106,7 @@ This index catalogs all evidence artifacts in `.sisyphus/evidence/` for:
 | `task-06-work-task-log-api.md` | Evidence | Work task log API, binary photo upload, and validation tests | Integrator | ✅ |
 | `task-06-smoke-evidence.md` | Evidence | API smoke for work task receive, status transition, log submit, and photo upload | Agent G / Integrator | ✅ |
 | `mobile-smoke-continuation.md` | Evidence | Mobile logic-layer smoke for task receive/status/log/photo/offline handling | Agent Y / Integrator | ✅ |
+| `mobile-device-smoke-readiness.md` | Evidence | Device/emulator smoke readiness and blocker checklist | Agent AA | ✅ |
 | `task-06-task-log-happy.log` | Log | Manual/mobile photo upload happy path | TBD | 🟡 |
 | `task-06-task-log-validation.log` | Log | Manual/mobile photo upload validation errors | TBD | 🟡 |
 | `task-07-incident-chemical-isolation.md` | Evidence | Incident + chemical usage trace and isolation guard tests | Integrator | ✅ |
@@ -120,7 +122,7 @@ This index catalogs all evidence artifacts in `.sisyphus/evidence/` for:
 | `task-09-harvest-happy.log` | Log | Manual/API harvest happy path smoke | TBD | 🟡 |
 | `task-09-harvest-validation.log` | Log | Manual/API harvest validation smoke | TBD | 🟡 |
 | `task-10-packing-mix.log` | Log | Packing lot with multiple sources | ✅ |
-| `task-10-packing-source-invalid.log` | Log | Invalid packing source rejection | TBD | 🔴 |
+| `task-10-packing-source-invalid.log` | Log | Invalid packing source rejection | Integrator | ✅ |
 | `task-11-qr-public.log` | Log | QR public endpoint evidence | ✅ |
 | `task-11-qr-privacy.log` | Log | QR privacy whitelist test | ✅ |
 
@@ -196,8 +198,7 @@ This index catalogs all evidence artifacts in `.sisyphus/evidence/` for:
 
 ### LOW Coverage (Evidence Gaps)
 - Security/farm isolation (T2) - Gap identified, not fixed
-- T6 device-level mobile smoke evidence - API and mobile logic-layer tests exist; real device/emulator evidence still pending
-- T10 packing source invalid log - packing API exists; explicit invalid source log remains pending
+- T6 device-level mobile smoke execution - readiness checklist exists; actual device/emulator evidence remains pending
 - T10-T14 MVP-1/2 downstream modules - No evidence created
 - All MVP-2 tasks (T12-T14) - No evidence created
 
@@ -218,7 +219,7 @@ This index catalogs all evidence artifacts in `.sisyphus/evidence/` for:
 
 ### HIGH (Should Close Before MVP-1)
 
-4. **Device-level mobile smoke** - API and service tests exist; Expo device/emulator flow still pending
+4. **Device-level mobile smoke** - API/service tests and readiness checklist exist; Expo device/emulator flow still pending
 5. **PostgreSQL staging migration** - Local PostgreSQL evidence exists; staging credentialed run still requires owner action
 6. **Planning TDD RED log** - `task-04-red.log` exists but is incomplete
 

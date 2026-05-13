@@ -1,0 +1,25 @@
+Task 10 Packing Invalid Source Evidence
+Date: 2026-05-13
+Integrator: Codex
+
+Scope:
+- Verify packing source rejection for unavailable/invalid harvest sources.
+
+Existing automated coverage:
+- tests/Feature/PackingLotApiTest.php::test_packed_harvest_lot_is_rejected_with_422
+- tests/Feature/PackingLotApiTest.php::test_duplicate_source_rows_are_rejected
+- tests/Feature/PackingLotApiTest.php::test_source_quantity_zero_is_rejected
+- tests/Feature/PackingLotApiTest.php::test_source_quantity_exceeds_harvest_lot_raw_quantity_is_rejected
+
+Command:
+rtk php artisan test tests/Feature/PackingLotApiTest.php
+
+Result:
+PASS - 10 tests, 62 assertions
+
+Key assertion:
+- A harvest lot with status `packed` is rejected with HTTP 422.
+- Error code: PACKING_SOURCE_UNAVAILABLE.
+
+Status:
+COMPLETE

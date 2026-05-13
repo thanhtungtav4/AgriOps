@@ -43,7 +43,7 @@ cd mobile/field-app && npm run lint && npm test -- --runInBand
 
 Current hardening baseline after the latest wave:
 
-- Laravel full suite: 295 tests / 1036 assertions.
+- Laravel full suite: 298 tests / 1062 assertions.
 - Expo field app focused tests: task receive/status/log/photo and offline queue conflict handling covered.
 - MVP/UAT evidence lives under `.sisyphus/evidence/`.
 

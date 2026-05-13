@@ -80,7 +80,8 @@ class CostingPriceMarginApiTest extends TestCase
             'occurred_at' => '2026-05-13',
         ])
             ->assertUnprocessable()
-            ->assertJsonValidationErrors(['cost_category']);
+            ->assertJsonValidationErrors(['cost_category'])
+            ->assertJsonPath('error.details.field', 'cost_category');
 
         $this->postJson('/api/v1/cost-records', [
             'farm_id' => $this->farm->id,
@@ -89,7 +90,8 @@ class CostingPriceMarginApiTest extends TestCase
             'occurred_at' => '2026-05-13',
         ])
             ->assertUnprocessable()
-            ->assertJsonValidationErrors(['cost_category']);
+            ->assertJsonValidationErrors(['cost_category'])
+            ->assertJsonPath('error.details.field', 'cost_category');
     }
 
     public function test_margin_dashboard_summarizes_estimated_and_actual_values(): void

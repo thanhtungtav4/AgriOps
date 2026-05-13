@@ -107,4 +107,52 @@ class ApiErrorContractTest extends TestCase
                 ],
             ]);
     }
+
+    public function test_laravel_validation_errors_normalized_to_standard_error_contract(): void
+    {
+        $user = User::factory()->create(['role' => User::ROLE_ADMIN]);
+        Sanctum::actingAs($user);
+
+        $response = $this->postJson('/api/v1/supply-contracts', [])
+            ->assertUnprocessable();
+
+        $response->assertJsonStructure([
+            'error' => [
+                'code',
+                'message',
+                'details',
+                'trace_id',
+            ],
+        ]);
+
+        $response->assertJsonPath('error.code', 'VALIDATION_REQUIRED');
+
+        $this->assertNotNull($response->json('error.trace_id'));
+    }
+
+    public function test_laravel_validation_error_contains_field_and_message(): void
+    {
+        $user = User::factory()->create(['role' => User::ROLE_ADMIN]);
+        Sanctum::actingAs($user);
+
+        $response = $this->postJson('/api/v1/supply-contracts', [])
+            ->assertUnprocessable();
+
+        $this->assertNotEmpty($response->json('error.message'));
+
+        $this->assertNotNull($response->json('error.details.field'));
+    }
+
+    public function test_auth_endpoint_validation_normalized_to_standard_contract(): void
+    {
+        $response = $this->postJson('/api/v1/auth/login', [])
+            ->assertUnprocessable();
+
+        $response->assertJsonStructure([
+            'error' => ['code', 'message', 'details', 'trace_id'],
+        ]);
+
+        $response->assertJsonPath('error.code', 'VALIDATION_REQUIRED');
+        $this->assertNotNull($response->json('error.trace_id'));
+    }
 }
