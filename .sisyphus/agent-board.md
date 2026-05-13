@@ -109,7 +109,7 @@ Current verification:
 - Task 7 incident/chemical/biological usage and isolation guard tests pass.
 - Task 8 pre-harvest inspection and harvest eligibility tests pass.
 - Task 9 harvest lots and grade breakdown tests pass.
-- Full suite passes cleanly: `265 tests, 888 assertions`.
+- Full suite passes cleanly: `281 tests, 963 assertions`.
 
 Next likely work:
 

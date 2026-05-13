@@ -49,7 +49,7 @@ The existing tests cover:
 Added during final gate:
 - `WorkTaskLogApiTest::test_client_uuid_makes_work_task_log_submission_idempotent`
 - Focused result: PASS, 9 tests / 35 assertions for `WorkTaskLogApiTest`
-- Full regression: PASS, 269 tests / 918 assertions
+- Full regression: PASS, 281 tests / 963 assertions after conflict hardening
 
 Remaining tests not covered:
 - Conflict scenarios when task status changes before retry

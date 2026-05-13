@@ -13,7 +13,7 @@ Date: 2026-05-13
 ## Performance/Smoke
 
 - Critical API workflow regression completed quickly in feature-test mode.
-- Full suite completed successfully after final patch: 269 tests / 918 assertions.
+- Full suite completed successfully after hardening patch: 281 tests / 963 assertions.
 - React production build completed in 824 ms with app JS gzip size 80.04 kB.
 
 ## Remaining Ops Follow-ups

@@ -5,6 +5,38 @@ import { authService } from './auth';
 
 const QUEUE_KEY = '@ariops:log_queue';
 
+interface ApiErrorBody {
+  error?: {
+    code?: string;
+    message?: string;
+    details?: Record<string, unknown>;
+  };
+  message?: string;
+}
+
+class ApiRequestError extends Error {
+  constructor(public readonly body: ApiErrorBody) {
+    super(body.error?.message ?? body.message ?? 'Request failed');
+  }
+}
+
+function errorCodeFrom(err: unknown): string | undefined {
+  if (err instanceof ApiRequestError) {
+    return err.body.error?.code;
+  }
+
+  if (!(err instanceof Error)) {
+    return undefined;
+  }
+
+  try {
+    const body = JSON.parse(err.message) as ApiErrorBody;
+    return body.error?.code;
+  } catch {
+    return undefined;
+  }
+}
+
 export interface LogSubmission {
   work_task_id: number;
   notes?: string;
@@ -27,8 +59,8 @@ class FarmingLogService {
     });
 
     if (!response.ok) {
-      const error = await response.json().catch(() => ({ message: 'Request failed' }));
-      throw new Error(error.message || 'Request failed');
+      const errorData = await response.json().catch(() => ({ message: 'Request failed' }));
+      throw new ApiRequestError(errorData);
     }
 
     return response.json();
@@ -84,6 +116,7 @@ export interface SyncResult {
   queuedLog: QueuedLog;
   serverLog?: FarmingLog;
   error?: string;
+  isConflict?: boolean;
 }
 
 class OfflineQueueService {
@@ -133,6 +166,22 @@ class OfflineQueueService {
         retryCount: stored[idx].retryCount + 1,
         lastAttempt: new Date().toISOString(),
         errorMessage: error,
+      };
+      await this.saveQueue(stored);
+    }
+  }
+
+  async markConflict(localId: string, error: string): Promise<void> {
+    const stored = await this.getQueue();
+    const idx = stored.findIndex(q => q.localId === localId);
+    if (idx !== -1) {
+      stored[idx] = {
+        ...stored[idx],
+        syncStatus: 'conflict',
+        retryCount: stored[idx].retryCount,
+        lastAttempt: new Date().toISOString(),
+        errorMessage: error,
+        serverLogId: null,
       };
       await this.saveQueue(stored);
     }
@@ -189,11 +238,23 @@ class OfflineQueueService {
       return { success: true, queuedLog, serverLog };
     } catch (err) {
       const error = err instanceof Error ? err.message : 'Unknown error';
-      await this.markFailed(localId, error);
+      const isConflict = errorCodeFrom(err) === 'TASK_TERMINAL_STATE_CONFLICT';
+
+      if (isConflict) {
+        await this.markConflict(localId, error);
+      } else {
+        await this.markFailed(localId, error);
+      }
+
       return {
         success: false,
-        queuedLog: { ...queuedLog, syncStatus: 'failed', retryCount: queuedLog.retryCount + 1 },
+        queuedLog: {
+          ...queuedLog,
+          syncStatus: isConflict ? 'conflict' : 'failed',
+          retryCount: isConflict ? queuedLog.retryCount : queuedLog.retryCount + 1,
+        },
         error,
+        isConflict,
       };
     }
   }

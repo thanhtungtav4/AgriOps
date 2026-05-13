@@ -122,7 +122,7 @@ All 18 tasks are now marked as completed based on evidence verification.
 - ✅ Unique and check constraints present as specified
 
 ### Test Coverage Verified
-- ✅ 269 tests pass with 918 assertions after final offline-idempotency gate
+- ✅ 281 tests pass with 963 assertions after audit/offline hardening
 - ✅ All domain models have factory implementations
 - ✅ Critical business rules covered by regression tests
 

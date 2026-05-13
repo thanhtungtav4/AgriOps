@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\AuditEvent;
 use App\Models\PlantingBatch;
 use InvalidArgumentException;
 
@@ -138,10 +139,11 @@ class PlantingBatchLifecycleService
         }
     }
 
-    public function transition(PlantingBatch $batch, string $toStatus, ?string $reason = null): PlantingBatch
+    public function transition(PlantingBatch $batch, string $toStatus, ?string $reason = null, ?int $userId = null): PlantingBatch
     {
         $this->validateTransition($batch, $toStatus, $reason);
 
+        $fromStatus = $batch->status;
         $updateData = ['status' => $toStatus];
 
         if ($toStatus === 'cancelled' && $reason !== null) {
@@ -161,6 +163,17 @@ class PlantingBatchLifecycleService
 
         $batch->update($updateData);
         $batch->refresh();
+
+        AuditEvent::recordLifecycleTransition(
+            farmId: $batch->farm_id,
+            batchId: $batch->id,
+            fromStatus: $fromStatus,
+            toStatus: $toStatus,
+            userId: $userId,
+            actorType: $userId ? 'user' : 'system',
+            reason: $reason,
+            metadata: $toStatus === 'cancelled' ? ['cancellation_reason' => $reason] : null
+        );
 
         return $batch;
     }

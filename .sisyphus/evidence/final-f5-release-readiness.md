@@ -4,7 +4,7 @@ Date: 2026-05-13
 
 ## Verification
 
-- Full Laravel suite: PASS, 269 tests / 918 assertions.
+- Full Laravel suite: PASS, 281 tests / 963 assertions after hardening.
 - E2E chain runner: PASS, including demand -> planning -> batch/allocation -> work task/log -> inspection/harvest -> packing/QR -> delivery/return.
 - Fail-path runner: PASS, including inspection rejection, isolation/chemical harvest block, and return quantity guard.
 - React operations build: PASS.

@@ -13,7 +13,7 @@ Result:
 - Inspection/harvest slice: PASS, 14 tests / 41 assertions.
 - Packing/QR traceability slice: PASS, 20 tests / 112 assertions.
 - Delivery/return slice: PASS, 3 tests / 24 assertions.
-- Full suite regression: PASS, 269 tests / 918 assertions.
+- Full suite regression: PASS, 281 tests / 963 assertions.
 
 ## Negative Paths
 
@@ -23,7 +23,7 @@ Result:
 - Inspection fail -> harvest block: PASS, 4 tests / 10 assertions.
 - Isolation/chemical fail -> harvest block: PASS, 4 tests / 7 assertions.
 - Delivery -> return path: PASS, 3 tests / 24 assertions.
-- Full suite regression: PASS, 269 tests / 918 assertions.
+- Full suite regression: PASS, 281 tests / 963 assertions.
 
 ## UI/Build Smoke
 

@@ -3,7 +3,7 @@
 **Generated:** 2026-05-12
 **Agent:** E - QA/Evidence
 **Project:** /Users/macbook/Herd/ariops
-**Last Updated:** 2026-05-13
+**Last Updated:** 2026-05-13 (Hardening Agent C - UAT Risk Cleanup)
 
 ---
 
@@ -113,10 +113,10 @@ This index catalogs all evidence artifacts in `.sisyphus/evidence/` for:
 | `task-09-harvest-lots.md` | Evidence | Harvest with grade breakdown and validation tests | Integrator | ✅ |
 | `task-09-harvest-happy.log` | Log | Manual/API harvest happy path smoke | TBD | 🟡 |
 | `task-09-harvest-validation.log` | Log | Manual/API harvest validation smoke | TBD | 🟡 |
-| `task-10-packing-mix.log` | Log | Packing lot with multiple sources | TBD | 🔴 |
+| `task-10-packing-mix.log` | Log | Packing lot with multiple sources | ✅ |
 | `task-10-packing-source-invalid.log` | Log | Invalid packing source rejection | TBD | 🔴 |
-| `task-11-qr-public.log` | Log | QR public endpoint evidence | TBD | 🔴 |
-| `task-11-qr-privacy.log` | Log | QR privacy whitelist test | TBD | 🔴 |
+| `task-11-qr-public.log` | Log | QR public endpoint evidence | ✅ |
+| `task-11-qr-privacy.log` | Log | QR privacy whitelist test | ✅ |
 
 ---
 

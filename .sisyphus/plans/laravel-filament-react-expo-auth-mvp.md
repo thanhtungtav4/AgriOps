@@ -875,7 +875,7 @@ Mỗi scenario phải có đủ:
   - ✅ `SimpleFactoryTest` verifies the factory RED→GREEN path with a persisted farm.
   - ✅ `FactoryRegressionTest::test_it_can_create_a_complete_farm_workflow_using_factories` builds a full farm workflow fixture covering all 20 new factories.
   - ✅ `FactoryRegressionTest::test_cancelled_work_task_cannot_accept_logs` exercises the API rule and passes twice cleanly.
-  - ✅ Full suite: 269 tests, 918 assertions, all pass after final offline-idempotency gate.
+  - ✅ Full suite: 281 tests, 963 assertions, all pass after audit/offline hardening.
   - ✅ Evidence: `.sisyphus/evidence/task-17-red.log`, `.sisyphus/evidence/task-17-green.log`, `.sisyphus/evidence/task-17-refactor.log`, `.sisyphus/evidence/task-17-known-rule.log`.
   - ✅ Fixed PHPUnit 12 method naming (`@test` → `test_` prefix) in FactoryRegressionTest.
 
@@ -908,7 +908,7 @@ Mỗi scenario phải có đủ:
   - ✅ Fail-path runner created at `.sisyphus/run-continuation/task-18-fail-paths.sh`.
   - ✅ Fail-path evidence captured at `.sisyphus/evidence/task-18-fail-paths.log`.
   - ✅ Final regression evidence captured at `.sisyphus/evidence/task-18-refactor.log`.
-  - ✅ Verification: fail-path runner passes 11 tests / 41 assertions plus full suite; full suite passes 269 tests / 918 assertions after final offline-idempotency gate.
+  - ✅ Verification: fail-path runner passes 11 tests / 41 assertions plus full suite; full suite passes 281 tests / 963 assertions after audit/offline hardening.
   - ⚠️ Intentional gap: dry-run chain uses focused API workflow tests instead of one mutable curl chain because allocation currently has no public API endpoint.
 
   **QA Scenarios**:

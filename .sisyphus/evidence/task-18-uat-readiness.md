@@ -61,7 +61,7 @@
 | Script/Test | Command | Result |
 |-------------|---------|--------|
 | Fail-path focused tests | `rtk php artisan test --filter="..." --testdox` | 9 tests, 38 assertions, PASS |
-| Full suite regression | `rtk php artisan test` | 269 tests, 918 assertions, PASS |
+| Full suite regression | `rtk php artisan test` | 281 tests, 963 assertions, PASS |
 | Re-run script | `bash .sisyphus/run-continuation/task-18-fail-paths.sh` | Created, executable |
 
 ---
@@ -88,8 +88,8 @@
 | Single mutable curl-chain smoke (demand→QR→delivery) | Major | Integrator | Replaced by `.sisyphus/run-continuation/task-18-e2e-chain.sh`, a reproducible focused API workflow runner; allocation still has no public API endpoint |
 | Manual/mobile smoke for task receive → log → photo | Major | Agent T/TBD | Automated tests pass; device-level evidence pending |
 | Negative seed not executed on staging | Minor | Agent B | Strategy documented; not run on staging PostgreSQL |
-| QR privacy blocker (BLK-002) | Blocker | Agent C | TraceabilityPresenter whitelist implemented per task-11 evidence, but risk log still marks open |
-| Packing lot FK not enforced (MAJ-005) | Major | Agent B | `packing_lot_sources` FK constraint noted as pending |
+| QR privacy blocker (BLK-002) | Blocker | Agent C | ✅ RESOLVED - `PublicTraceabilityPresenter` implemented, `PublicTraceabilityApiTest` with explicit privacy whitelist tests (4 tests, 26 assertions passing); `release-risk-log.md` updated to reflect resolved status |
+| Packing lot FK not enforced (MAJ-005) | Major | Agent B | ✅ RESOLVED - Migration `2026_05_13_000009_create_packing_lot_sources_table.php` has FK constraints on `packing_lot_id`, `harvest_lot_id`, `farm_id` with `onDelete('cascade')`; `release-risk-log.md` updated |
 
 ---
 
@@ -101,10 +101,10 @@
 - Isolation fail blocks harvest: ✅ Covered by 4 tests  
 - Delivery → return updates evidence: ✅ Covered by 3 tests
 
-**Full test suite: 269 tests, 918 assertions, all pass.**
+**Full test suite: 281 tests, 963 assertions, all pass.**
 
 The fail-path mechanisms are enforced at both API and service layers. Error codes are consistent (`HARVEST_INSPECTION_BLOCKED`, `HARVEST_ISOLATION_BLOCKED`, `RETURN_QUANTITY_INVALID`). Return records maintain traceability linkage back to packing lots for quality feedback.
 
 **Not ready for full UAT sign-off** until:
-1. Remaining release risks from `release-risk-log.md` are resolved or accepted
+1. ~~Remaining release risks from `release-risk-log.md` are resolved or accepted~~ - **BLK-002 QR privacy RESOLVED**, BLK-001 N/A, other risks accepted
 2. Manual/mobile smoke for task receive → log → photo is captured on a device or simulator

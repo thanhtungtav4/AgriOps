@@ -282,6 +282,29 @@ class WorkTaskLogApiTest extends TestCase
             ->assertJsonPath('error.code', 'TASK_CANCELLED');
     }
 
+    public function test_cannot_submit_log_with_client_uuid_for_terminal_state_task(): void
+    {
+        Sanctum::actingAs($this->worker);
+
+        $task = WorkTask::create([
+            'farm_id' => $this->farm->id,
+            'title' => 'Completed task',
+            'status' => 'done', // Terminal state
+            'priority' => 'normal',
+        ]);
+
+        $response = $this->postJson('/api/v1/work-tasks/' . $task->id . '/logs', [
+            'notes' => 'Should fail due to terminal state.',
+            'client_uuid' => 'offline-local-456', // New client UUID for terminal state
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonPath('error.code', 'TASK_TERMINAL_STATE_CONFLICT')
+            ->assertJsonPath('error.message', 'Cannot submit a log for a task that is in a terminal state.')
+            ->assertJsonPath('error.details.current_status', 'done')
+            ->assertJsonPath('error.details.task_id', $task->id);
+    }
+
     public function test_actual_end_must_be_after_actual_start(): void
     {
         Sanctum::actingAs($this->worker);

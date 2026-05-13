@@ -28,10 +28,6 @@ class WorkTaskLogController extends Controller
             );
         }
 
-        if ($task->status === 'cancelled') {
-            return $this->domainError('Cannot submit a log for a cancelled task.', [], 'TASK_CANCELLED');
-        }
-
         if (
             ($task->metadata['requires_photo'] ?? false)
             && empty($request->input('photo_paths'))
@@ -64,6 +60,21 @@ class WorkTaskLogController extends Controller
                     200
                 );
             }
+
+            if (in_array($task->status, ['cancelled', 'done'])) {
+                return $this->domainError(
+                    'Cannot submit a log for a task that is in a terminal state.',
+                    [
+                        'current_status' => $task->status,
+                        'task_id' => $task->id,
+                        'task_title' => $task->title,
+                        'next_action' => 'Fetch latest task state or contact supervisor',
+                    ],
+                    'TASK_TERMINAL_STATE_CONFLICT'
+                );
+            }
+        } elseif ($task->status === 'cancelled') {
+            return $this->domainError('Cannot submit a log for a cancelled task.', [], 'TASK_CANCELLED');
         }
 
         $photoPaths = $validated['photo_paths'] ?? [];
