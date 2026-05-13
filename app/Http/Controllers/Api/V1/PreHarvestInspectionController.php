@@ -85,6 +85,10 @@ class PreHarvestInspectionController extends Controller
         $inspection = PreHarvestInspection::findOrFail($id);
         $user = $request->user();
 
+        if (!$user->canApprove()) {
+            return $this->forbiddenError('Only approver roles can approve pre-harvest inspections.');
+        }
+
         if (!$user->isAdmin() && $inspection->farm_id !== $user->farm_id) {
             return $this->forbiddenError('You do not have permission to approve this inspection.');
         }
@@ -102,6 +106,10 @@ class PreHarvestInspectionController extends Controller
     {
         $inspection = PreHarvestInspection::findOrFail($id);
         $user = $request->user();
+
+        if (!$user->canApprove()) {
+            return $this->forbiddenError('Only approver roles can reject pre-harvest inspections.');
+        }
 
         if (!$user->isAdmin() && $inspection->farm_id !== $user->farm_id) {
             return $this->forbiddenError('You do not have permission to reject this inspection.');

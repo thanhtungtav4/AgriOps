@@ -31,7 +31,7 @@ This log tracks known issues, risks, and blockers that affect release readiness 
 
 | ID | Risk | Severity | Owner | Mitigation | Gate | Status |
 |----|------|----------|-------|------------|------|--------|
-| CRIT-001 | **Sensitive approval RBAC not fully implemented** - farm-scoped controllers are enforced, but future approval actions still need policy checks | Critical | Agent C | Add policy checks when approval endpoints are introduced | MVP-1 | 🟡 PARTIAL |
+| CRIT-001 | **Sensitive approval RBAC not fully implemented** - farm-scoped controllers are enforced, and current approval endpoints now deny non-approver roles at the controller boundary | Critical | Agent C / AD | Keep explicit approval checks for future approval endpoints | MVP-1 | ✅ RESOLVED |
 | CRIT-002 | **Planning TDD RED log incomplete** - RED phase verification unclear | Critical | Agent A | Document RED phase test names in `task-04-tdd-trace.md` | MVP-0 | ✅ RESOLVED |
 | CRIT-003 | **PostgreSQL staging not verified** - Local PostgreSQL is verified, but staging PostgreSQL migration evidence is not captured | Critical | Agent B / Owner | Run `php artisan migrate:fresh` on staging PostgreSQL and save evidence | MVP-0 | 🟡 PARTIAL |
 | CRIT-004 | **Token policy partially complete** - token expiry/revoke implemented; login rate limiting now added | Critical | Agent C | Login rate limiting via `throttle:5,1` middleware | MVP-0 | ✅ RESOLVED |
@@ -93,6 +93,8 @@ This log tracks known issues, risks, and blockers that affect release readiness 
 | RES-024 | Missing pre-harvest inspection approval gate | Added `pre_harvest_inspections` schema/API, approval workflow, and harvest eligibility service tests | 2026-05-13 |
 | RES-025 | Missing harvest lot and grade breakdown module | Added `harvest_lots` schema/API, `HarvestLotService`, grade validation, and eligibility guard wiring | 2026-05-13 |
 | RES-026 | Missing QR privacy whitelist (BLK-002) | Added `PublicTraceabilityPresenter`, `PublicTraceabilityPageController`, `PublicTraceabilityApiTest` with explicit privacy whitelist tests (chemical names, dosages, costs, user emails excluded) | 2026-05-13 |
+| RES-027 | Sensitive approval RBAC partial | Added controller-level approver checks for pre-harvest approve/reject and planting batch approve transition, plus worker-denial regressions | 2026-05-13 |
+| RES-028 | Missing MVP-2 evidence logs | Captured Task 12 delivery/return, Task 13 cost/margin, and Task 14 alert evidence logs | 2026-05-13 |
 
 ---
 
@@ -105,14 +107,14 @@ This log tracks known issues, risks, and blockers that affect release readiness 
 | G1 | All migrations pass on PostgreSQL | ✅ | Local PostgreSQL migrated through batch 2 |
 | G2 | DB constraints match spec | ✅ | `final-f2c-db-architecture.md` |
 | G3 | Auth functional | ✅ | `task-02-auth-happy.log` |
-| G4 | RBAC policies enforced | 🟡 | Farm-scoped API enforced; approval policies deferred until endpoints exist |
+| G4 | RBAC policies enforced | ✅ | Farm-scoped API enforced; current approval endpoints deny non-approver roles |
 | G5 | Farm scope isolated | ✅ | `security-scope-implementation.md`, `FarmScopeApiTest` |
 | G6 | Master data CRUD works | ✅ | `task-03-master-happy.log` |
 | G7 | Planning calculation correct | ✅ | `task-04-green.log` |
 | G8 | Planning domain errors work | ✅ | `task-04-tdd-trace.md` |
 | G9 | Data dictionary complete | ✅ | `data-dictionary-baseline.md` |
 
-**MVP-0 Gate Decision:** 🟡 **PROCEED WITH KNOWN RISKS** (login rate limiting resolved; only staging PostgreSQL evidence pending - requires Owner action)
+**MVP-0 Gate Decision:** 🟡 **PROCEED WITH KNOWN RISKS** (login rate limiting and current approval RBAC resolved; staging PostgreSQL evidence pending - requires Owner action)
 
 ### MVP-1 Release Gate
 
@@ -143,7 +145,7 @@ This log tracks known issues, risks, and blockers that affect release readiness 
 | **Testing** | 2 | 0 | 1 | 1 | 0 |
 | **Architecture** | 3 | 0 | 0 | 1 | 2 |
 | **Operations** | 2 | 0 | 1 | 1 | 0 |
-| **TOTAL** | 11 | 0 | 3 | 5 | 3 |
+| **TOTAL** | 11 | 0 | 2 | 5 | 3 |
 
 ---
 
@@ -151,7 +153,7 @@ This log tracks known issues, risks, and blockers that affect release readiness 
 
 ```
 2026-05-13: 16 tracked risks (0 blockers, 1 active critical/partial, 1 active major, 5 minor)
-            28 resolved risks (added RES-026: QR privacy whitelist; MAJ-001 automated workflow evidence)
+            30 resolved risks (added RES-027 approval RBAC and RES-028 MVP-2 evidence logs)
             MVP-0: PROCEED WITH KNOWN RISKS
             MVP-1: PROCEED WITH KNOWN RISKS (BLK-002 resolved, MAJ-005 resolved)
 ```
@@ -186,7 +188,7 @@ This log tracks known issues, risks, and blockers that affect release readiness 
 8. ~~Create QR privacy automated test~~ - ✅ RESOLVED (PublicTraceabilityApiTest)
 9. ~~Add packing lot migrations with FK constraints~~ - ✅ RESOLVED (MAJ-005)
 10. **Run device-level mobile smoke for task receive → log → photo** - MAJ-006 remains accepted/pending
-11. **Complete all MVP-1 task evidence logs** - task-11 evidence logs now exist
+11. **Complete all MVP-1/MVP-2 task evidence logs** - task-12, task-13, and task-14 focused evidence logs now exist
 
 ---
 

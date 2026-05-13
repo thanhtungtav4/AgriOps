@@ -301,6 +301,35 @@ class PlantingBatchApiTest extends TestCase
         ]);
     }
 
+    public function test_worker_cannot_transition_batch_to_approved(): void
+    {
+        $worker = User::factory()->create([
+            'role' => User::ROLE_WORKER,
+            'farm_id' => $this->farm->id,
+        ]);
+        Sanctum::actingAs($worker);
+
+        $batch = PlantingBatch::create([
+            'farm_id' => $this->farm->id,
+            'crop_id' => $this->crop->id,
+            'planned_quantity' => 100,
+            'planned_unit' => 'kg',
+            'status' => 'planned',
+        ]);
+
+        $response = $this->patchJson("/api/v1/planting-batches/{$batch->id}/transition", [
+            'to_status' => 'approved',
+        ]);
+
+        $response->assertStatus(403)
+            ->assertJsonPath('error.code', 'AUTH_FORBIDDEN');
+
+        $this->assertDatabaseHas('planting_batches', [
+            'id' => $batch->id,
+            'status' => 'planned',
+        ]);
+    }
+
     public function test_can_transition_approved_to_soil_prep(): void
     {
         Sanctum::actingAs($this->user);

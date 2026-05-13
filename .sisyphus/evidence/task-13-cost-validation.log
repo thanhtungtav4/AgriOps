@@ -1,0 +1,11 @@
+Command: rtk php artisan test tests/Feature/CostingPriceMarginApiTest.php
+Date: 2026-05-13
+Agent: AF / Integrator
+Result: PASS
+
+{"tool":"phpunit","result":"passed","tests":3,"passed":3,"assertions":22}
+
+Covered flow:
+- Cost record creation validates canonical cost categories.
+- Invalid cost category is rejected with validation errors.
+- Margin dashboard summarizes estimated and actual costs.

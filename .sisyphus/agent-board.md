@@ -64,6 +64,7 @@ Must review:
 | T Qwen UX Review | React admin UX friction review | Qwen UX review evidence only | application code | Review | `.sisyphus/evidence/task-15-react-admin-qwen-ux-review.md` |
 | U NVIDIA Route Tests | React operations route/build tests | `OperationsWebRoutesTest.php`, route test evidence | React component/auth files, route definitions unless documented | Review | `.sisyphus/evidence/task-15-react-operations-routes-tests.md` |
 | V ZEN API Contract | React/Expo API contract review | API contract review evidence only | application code | Review | `.sisyphus/evidence/task-15-react-api-contract-review.md` |
+| W Crop Catalog Seed | Realistic Vietnamese crop catalog seed | `AgriCropCatalogSeeder`, crop catalog seeder test, seed evidence | migrations, controllers/routes/services, React/Expo | Running | `.sisyphus/evidence/task-crop-catalog-seed.md` |
 
 Model assignment:
 
@@ -91,6 +92,7 @@ Model assignment:
 - Agent T Qwen UX Review: `alibaba/qwen3-coder-plus`.
 - Agent U NVIDIA Route Tests: `nvidia/qwen/qwen3-coder-480b-a35b-instruct`.
 - Agent V ZEN API Contract: `opencode-go/qwen3.6-plus`.
+- Agent W Crop Catalog Seed: `alibaba/qwen3-coder-480b-a35b-instruct`.
 
 Runbook:
 
@@ -113,13 +115,13 @@ Current verification:
 - Audit hooks cover lifecycle transitions plus allocation create/remove.
 - API error contract has additional crop lookup, planning domain-error, validation, and throttle coverage.
 - Mobile logic-layer smoke covers task receive/status/log/photo and offline conflict handling; device readiness evidence documents the remaining emulator/device blocker.
-- Full suite passes cleanly: `298 tests, 1062 assertions`.
+- Full suite passes cleanly: `302 tests, 1071 assertions`.
 
 Next likely work:
 
 - Run device-level mobile smoke for task receive -> log -> photo when a device/emulator is available.
 - Capture staging PostgreSQL migration evidence with owner credentials.
-- Continue API error-contract cleanup for deferred approval endpoints.
+- Continue API error-contract cleanup for future approval endpoints.
 
 ## Workstream Briefs
 

@@ -47,6 +47,7 @@ Models:
 - Agent T Qwen React UX Review: `.sisyphus/opencode-prompts/agent-t-qwen-react-ux-review.md`
 - Agent U NVIDIA Operations Route Tests: `.sisyphus/opencode-prompts/agent-u-nvidia-operations-routes-tests.md`
 - Agent V OpenCode Go/ZEN API Contract Review: `.sisyphus/opencode-prompts/agent-v-zend-api-contract-review.md`
+- Agent W Crop Catalog Seed: `.sisyphus/opencode-prompts/agent-w-crop-catalog-seed.md`
 
 ## Recommended Assignment
 
@@ -76,6 +77,7 @@ Models:
 | T Qwen UX Review | `alibaba/qwen3-coder-plus` | UI/UX friction review |
 | U NVIDIA Route Tests | `nvidia/qwen/qwen3-coder-480b-a35b-instruct` | Route/build tests |
 | V ZEN API Contract | `opencode-go/qwen3.6-plus` | API contract review for React/Expo reuse |
+| W Crop Catalog Seed | `alibaba/qwen3-coder-480b-a35b-instruct` | Realistic Vietnamese crop/norm seed implementation |
 
 ## Run Commands
 

@@ -1,0 +1,28 @@
+# Task 12 - Return Flow Evidence
+# Generated: 2026-05-13
+# Agent: AE / Integrator
+# Status: COMPLETE
+
+Command:
+rtk php artisan test tests/Feature/DeliveryReturnApiTest.php --env=testing
+
+Result:
+PASS - 3 tests, 24 assertions
+
+Covered tests:
+- tests/Feature/DeliveryReturnApiTest.php::test_return_record_updates_delivery_net_revenue_and_links_to_packing_lot
+- tests/Feature/DeliveryReturnApiTest.php::test_return_quantity_cannot_exceed_accepted_quantity
+
+Verified behavior:
+- POST /api/v1/returns creates a return record with revenue deduction.
+- Return record links back to the packing lot.
+- Delivery net revenue, returned quantity, and net quantity update after return creation.
+- Return quantity above accepted quantity returns 422 with RETURN_QUANTITY_INVALID.
+
+Calculation sample:
+accepted_quantity: 100
+unit_price: 25000
+initial_net_revenue: 2500000
+return_quantity: 5
+revenue_deduction: 5 * 25000 = 125000
+net_revenue_after_return: 2375000

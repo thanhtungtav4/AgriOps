@@ -1,0 +1,25 @@
+# Task 12 - Delivery Revenue Evidence
+# Generated: 2026-05-13
+# Agent: AE / Integrator
+# Status: COMPLETE
+
+Command:
+rtk php artisan test tests/Feature/DeliveryReturnApiTest.php --env=testing
+
+Result:
+PASS - 3 tests, 24 assertions
+
+Covered test:
+tests/Feature/DeliveryReturnApiTest.php::test_delivery_revenue_snapshot_is_calculated_from_accepted_quantity_and_unit_price
+
+Verified behavior:
+- POST /api/v1/deliveries creates delivery revenue from accepted quantity and unit price.
+- Gross revenue and net revenue match when no return exists.
+- GET /api/v1/deliveries/{id}/revenue returns the revenue snapshot.
+- Price snapshot is captured at delivery time.
+
+Calculation sample:
+accepted_quantity: 96
+unit_price: 25000
+gross_revenue: 96 * 25000 = 2400000
+net_revenue: 2400000

@@ -3,7 +3,7 @@
 **Generated:** 2026-05-12
 **Agent:** E - QA/Evidence
 **Project:** /Users/macbook/Herd/ariops
-**Last Updated:** 2026-05-13 (Hardening Agent C - UAT Risk Cleanup)
+**Last Updated:** 2026-05-13 (Continuation Agents AD-AH - Evidence/RBAC Cleanup)
 
 ---
 
@@ -56,7 +56,7 @@ This index catalogs all evidence artifacts in `.sisyphus/evidence/` for:
 | File | Type | Created | Purpose | Owner | Status |
 |------|------|---------|---------|-------|--------|
 | `task-04-green.log` | Log | 2026-05-12 | Planning tests passing (5 tests, 52 assertions) | Agent A | ✅ |
-| `task-04-red.log` | Log | 2026-05-12 | TDD RED phase evidence | Agent A | 🔴 |
+| `task-04-red.log` | Log | 2026-05-13 | TDD RED phase evidence (reconstructed) | Agent A / AH | 🟡 |
 | `task-04-refactor.log` | Log | 2026-05-12 | Refactor phase evidence | Agent A | ✅ |
 | `task-04-migration.log` | Log | 2026-05-12 | T4 migration evidence | Agent A | ✅ |
 | `task-04-routes.log` | Log | 2026-05-12 | T4 routes registration evidence | Agent A | ✅ |
@@ -74,6 +74,7 @@ This index catalogs all evidence artifacts in `.sisyphus/evidence/` for:
 | `final-f4b-business-architecture.md` | Spec | 2026-05-12 | Business architecture guardrails | Agent D | ✅ |
 | `business-rules-v1.md` | Spec | 2026-05-12 | Detailed business rules and override governance | Agent D | ✅ |
 | `security-scope-implementation.md` | Evidence | 2026-05-12 | Farm scope, token policy, and API security implementation | Agent C2 | ✅ |
+| `rbac-approval-audit-continuation.md` | Evidence | 2026-05-13 | Approval endpoint RBAC audit and worker-denial regressions | Agent AD / Integrator | ✅ |
 | `seed-postgres-evidence.md` | Evidence | 2026-05-12 | Idempotent seeders and local PostgreSQL evidence | Agent B2 | ✅ |
 | `postgres-evidence-continuation.md` | Evidence | 2026-05-13 | Local PostgreSQL migration status and staging-owner gate | Agent AB / Integrator | ✅ |
 | `task-05-batch-foundation.md` | Evidence | 2026-05-12 | Planting batch/allocation schema, models, and tests | Agent F | ✅ |
@@ -128,15 +129,18 @@ This index catalogs all evidence artifacts in `.sisyphus/evidence/` for:
 
 ---
 
-## MVP-2 Evidence Artifacts (T12-T14) - NOT YET CREATED
+## MVP-2 Evidence Artifacts (T12-T14)
 
 | File | Type | Purpose | Owner | Status |
 |------|------|---------|-------|--------|
-| `task-12-delivery-revenue.log` | Log | Delivery → revenue calculation | TBD | 🔴 |
-| `task-12-return-flow.log` | Log | Return flow evidence | TBD | 🔴 |
-| `task-13-margin-happy.log` | Log | Cost/margin calculation | TBD | 🔴 |
-| `task-13-cost-validation.log` | Log | Cost record validation | TBD | 🔴 |
-| `task-14-alert-happy.log` | Log | Alert generation | TBD | 🔴 |
+| `task-12-delivery-revenue.log` | Log | Delivery → revenue calculation | Agent AE / Integrator | ✅ |
+| `task-12-return-flow.log` | Log | Return flow evidence | Agent AE / Integrator | ✅ |
+| `task-12-delivery-return-continuation.md` | Evidence | Delivery/return evidence summary | Agent AE / Integrator | ✅ |
+| `task-13-margin-happy.log` | Log | Cost/margin calculation | Agent AF / Integrator | ✅ |
+| `task-13-cost-validation.log` | Log | Cost record validation | Agent AF / Integrator | ✅ |
+| `task-13-cost-margin-continuation.md` | Evidence | Cost/margin evidence summary | Agent AF / Integrator | ✅ |
+| `task-14-alert-happy.log` | Log | Alert generation | Agent AG / Integrator | ✅ |
+| `task-14-alert-continuation.md` | Evidence | Alert evidence summary | Agent AG / Integrator | ✅ |
 
 ---
 
@@ -180,7 +184,7 @@ This index catalogs all evidence artifacts in `.sisyphus/evidence/` for:
 | T7 (Incident + Chemical Isolation) | 2 files | ✅ |
 | T8 (Pre-harvest Inspection) | 2 files | ✅ |
 | T9 (Harvest Lots) | 2 files | ✅ |
-| T10-T14 (MVP-1/2 remaining) | 0 files | 🔴 |
+| T10-T14 (MVP-1/2 downstream) | 12 files | ✅ |
 
 ---
 
@@ -193,19 +197,16 @@ This index catalogs all evidence artifacts in `.sisyphus/evidence/` for:
 - Planning calculation and formula (T4)
 
 ### MEDIUM Coverage (Evidence Partial)
-- RBAC permission matrix (T2) - Design complete, implementation not verified
+- RBAC permission matrix (T2) - Current approval endpoints verified; future approval endpoints still need explicit checks
 - API error contract (T2) - Spec complete, enforcement not tested
 
 ### LOW Coverage (Evidence Gaps)
-- Security/farm isolation (T2) - Gap identified, not fixed
 - T6 device-level mobile smoke execution - readiness checklist exists; actual device/emulator evidence remains pending
-- T10-T14 MVP-1/2 downstream modules - No evidence created
-- All MVP-2 tasks (T12-T14) - No evidence created
+- Staging PostgreSQL execution - local PostgreSQL evidence exists; owner credentialed staging run remains pending
+- Manual device-level evidence for mobile/photo flow remains pending
 
 ### NO Coverage
-- TDD RED phases for T5-T14
-- E2E smoke tests for demand → QR path
-- Regression tests for any MVP-1+ features
+- Original failing console output for reconstructed RED logs where work was completed before evidence capture
 
 ---
 
@@ -213,15 +214,15 @@ This index catalogs all evidence artifacts in `.sisyphus/evidence/` for:
 
 ### CRITICAL (Block Release)
 
-1. **Farm scope isolation tests** - No test proves User A cannot see Farm B data
-2. **RBAC controller enforcement** - Policy exists but not enforced on controllers
+1. **Staging PostgreSQL evidence** - Local PostgreSQL evidence exists; staging credentialed run remains owner action
+2. **Future RBAC controller enforcement** - Implemented approval endpoints now enforce controller RBAC; future approval actions must keep this pattern
 3. **QR privacy whitelist test** - Required before QR public ships
 
 ### HIGH (Should Close Before MVP-1)
 
 4. **Device-level mobile smoke** - API/service tests and readiness checklist exist; Expo device/emulator flow still pending
 5. **PostgreSQL staging migration** - Local PostgreSQL evidence exists; staging credentialed run still requires owner action
-6. **Planning TDD RED log** - `task-04-red.log` exists but is incomplete
+6. **Planning TDD RED log** - `task-04-red.log` reconstructed from test names and TDD trace (2026-05-13). Original PHPUnit failure output not recoverable without code revert.
 
 ### MEDIUM (MVP Hardening)
 

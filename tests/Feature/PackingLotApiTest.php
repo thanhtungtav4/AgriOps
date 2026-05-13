@@ -175,6 +175,46 @@ class PackingLotApiTest extends TestCase
             ->assertJsonPath('error.code', 'PACKING_SOURCE_UNAVAILABLE');
     }
 
+    public function test_reserved_harvest_lot_is_rejected_with_422(): void
+    {
+        Sanctum::actingAs($this->admin);
+
+        $this->harvestLotsA[0]->update(['status' => 'reserved']);
+
+        $response = $this->postJson('/api/v1/packing-lots', [
+            'farm_id' => $this->farmA->id,
+            'packed_at' => '2026-05-15 10:00:00',
+            'total_output_quantity' => 50,
+            'unit' => 'kg',
+            'sources' => [
+                ['harvest_lot_id' => $this->harvestLotsA[0]->id, 'quantity' => 50],
+            ],
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonPath('error.code', 'PACKING_SOURCE_UNAVAILABLE');
+    }
+
+    public function test_cancelled_harvest_lot_is_rejected_with_422(): void
+    {
+        Sanctum::actingAs($this->admin);
+
+        $this->harvestLotsA[0]->update(['status' => 'cancelled']);
+
+        $response = $this->postJson('/api/v1/packing-lots', [
+            'farm_id' => $this->farmA->id,
+            'packed_at' => '2026-05-15 10:00:00',
+            'total_output_quantity' => 50,
+            'unit' => 'kg',
+            'sources' => [
+                ['harvest_lot_id' => $this->harvestLotsA[0]->id, 'quantity' => 50],
+            ],
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonPath('error.code', 'PACKING_SOURCE_UNAVAILABLE');
+    }
+
     public function test_duplicate_source_rows_are_rejected(): void
     {
         Sanctum::actingAs($this->admin);

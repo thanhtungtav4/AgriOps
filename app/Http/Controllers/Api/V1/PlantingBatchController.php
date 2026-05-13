@@ -122,6 +122,10 @@ class PlantingBatchController extends Controller
             'reason' => ['nullable', 'string', 'max:1000'],
         ]);
 
+        if ($validated['to_status'] === 'approved' && !$user->canApprove()) {
+            return $this->forbiddenError('Only approver roles can approve planting batches.');
+        }
+
         try {
             $batch = $this->lifecycleService->transition(
                 $batch,

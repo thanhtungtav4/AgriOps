@@ -1,0 +1,154 @@
+# Task 04 RED Phase Evidence (Reconstructed)
+
+**Generated:** 2026-05-13
+**Agent:** AH - Evidence Cleanup
+**Project:** /Users/macbook/Herd/ariops
+**Status:** RECONSTRUCTED - Not captured during original TDD run
+
+---
+
+## Reconstruction Methodology
+
+This RED log was reconstructed from:
+1. Test names in `tests/Feature/PlanningApiTest.php`
+2. TDD trace in `task-04-tdd-trace.md`
+3. GREEN/REFACTOR logs (`task-04-green.log`, `task-04-refactor.log`)
+4. Implementation changes in `PlanningService.php`, `DomainException.php`, `PlanningController.php`
+
+**No historical command output was invented.** Each entry describes what failure would have occurred based on the test assertions and the pre-implementation state of the codebase.
+
+---
+
+## RED Phase - Test Failures Before Implementation
+
+### Test 1: test_happy_path_includes_assumptions_and_fulfillment
+
+**Expected failure:** `assumptions` key missing from JSON response
+
+The test asserts:
+```php
+$response->assertJsonStructure([
+    'assumptions' => [
+        'formula_version', 'loss_model', 'season', 'climate_zone',
+        'season_factor', 'climate_factor', 'price_source', 'rounding_profile',
+    ],
+    'fulfillment' => [
+        'status', 'shortages', 'warnings',
+    ],
+]);
+```
+
+Before implementation, `PlanningController` returned only `output` in the JSON response. The `assumptions` and `fulfillment` keys did not exist. The test would fail with:
+
+```
+Failed asserting that array has structure with key 'assumptions'.
+```
+
+**Implementation required to pass:**
+- Add `assumptions` object with 8 fields to response
+- Add `fulfillment` object with status, shortages, warnings
+- Set `fulfillment.status` to 'warning' when season/climate not specified
+- Populate `fulfillment.warnings` with ['season_not_specified', 'climate_zone_not_specified']
+
+---
+
+### Test 2: test_plant_execution_quantities_round_up
+
+**Expected failure:** `plants_needed_estimate` and `plants_needed_execution` keys missing from response
+
+The test asserts:
+```php
+$response->assertJsonStructure([
+    'output' => [
+        'plants_needed_estimate',
+        'plants_needed_execution',
+        'plants_to_plant_estimate',
+        'plants_to_plant_execution',
+    ],
+]);
+```
+
+Before implementation, the response only contained a single `plants_needed` field (no estimate/execution split). The test would fail with:
+
+```
+Failed asserting that array has structure with key 'plants_needed_estimate'.
+```
+
+**Implementation required to pass:**
+- Split `plants_needed` into `plants_needed_estimate` (decimal) and `plants_needed_execution` (ceil)
+- Split `plants_to_plant` into `plants_to_plant_estimate` (decimal) and `plants_to_plant_execution` (ceil)
+- Ensure execution values are whole numbers (rounded up)
+
+---
+
+### Test 3: test_unsupported_unit_returns_field_level_planning_error
+
+**Expected failure:** `field` not returned in domain error response
+
+The test asserts:
+```php
+$response->assertJsonStructure([
+    'error' => [
+        'code',
+        'message',
+        'details' => [
+            'field',
+        ],
+        'trace_id',
+    ],
+]);
+```
+
+Before implementation, `DomainException` did not have a `field` property. The error response structure lacked `details.field`. The test would fail with:
+
+```
+Failed asserting that array has structure with key 'details.field'.
+```
+
+**Implementation required to pass:**
+- Add `field` property to `DomainException` class
+- Add `context` property to `DomainException` class
+- Update `DomainException::toArray()` to include `details.field`
+- Update `PlanningController` to use `DomainException::toArray()` for error responses
+
+---
+
+## Summary of RED Failures
+
+| # | Test Name | Missing Feature | Failure Type |
+|---|-----------|----------------|--------------|
+| 1 | `test_happy_path_includes_assumptions_and_fulfillment` | assumptions + fulfillment objects in response | JSON structure missing keys |
+| 2 | `test_plant_execution_quantities_round_up` | estimate/execution quantity split | JSON structure missing keys |
+| 3 | `test_unsupported_unit_returns_field_level_planning_error` | field-level error details in DomainException | JSON structure missing nested key |
+
+---
+
+## Files Changed During GREEN Phase (to make RED tests pass)
+
+1. `app/Services/PlanningService.php` - Added assumptions, fulfillment, unit validation, plant execution split
+2. `app/Exceptions/DomainException.php` - Added field and context properties
+3. `app/Http/Controllers/Api/V1/PlanningController.php` - Use DomainException::toArray()
+4. `tests/Feature/PlanningApiTest.php` - Added 3 new tests, updated assertions for plant execution
+
+---
+
+## Verification
+
+After GREEN phase implementation, all 5 Planning tests passed:
+
+```
+tests/Feature/PlanningApiTest.php
+- test_planning_calculation_returns_core_outputs_for_complete_norms: PASS
+- test_planning_calculation_returns_domain_error_when_norms_are_missing: PASS
+- test_happy_path_includes_assumptions_and_fulfillment: PASS
+- test_plant_execution_quantities_round_up: PASS
+- test_unsupported_unit_returns_field_level_planning_error: PASS
+
+Total: 5 tests, 52 assertions
+```
+
+Source: `task-04-green.log` → `{"tool":"phpunit","result":"passed","tests":5,"passed":5,"assertions":52,"duration_ms":200}`
+
+---
+
+**End of Reconstructed RED Evidence**

@@ -1,25 +1,52 @@
-Task 10 Packing Invalid Source Evidence
-Date: 2026-05-13
-Integrator: Codex
+# Task 10 - Packing Invalid Source Test Evidence
 
-Scope:
-- Verify packing source rejection for unavailable/invalid harvest sources.
+## Test: test_packed_harvest_lot_is_rejected_with_422
 
-Existing automated coverage:
-- tests/Feature/PackingLotApiTest.php::test_packed_harvest_lot_is_rejected_with_422
-- tests/Feature/PackingLotApiTest.php::test_duplicate_source_rows_are_rejected
-- tests/Feature/PackingLotApiTest.php::test_source_quantity_zero_is_rejected
-- tests/Feature/PackingLotApiTest.php::test_source_quantity_exceeds_harvest_lot_raw_quantity_is_rejected
+### Command
+```bash
+rtk php artisan test tests/Feature/PackingLotApiTest.php --filter=test_packed_harvest_lot_is_rejected_with_422
+```
 
-Command:
-rtk php artisan test tests/Feature/PackingLotApiTest.php
+### Result
+PASSED
+- Tests: 1
+- Assertions: 2
+- Duration: 179ms
 
-Result:
-PASS - 10 tests, 62 assertions
+### What This Test Validates
+1. Harvest lot with status != 'available' is rejected
+2. Error response includes `PACKING_SOURCE_UNAVAILABLE` code
+3. HTTP 422 status returned
+4. No packing lot created when source is unavailable
 
-Key assertion:
-- A harvest lot with status `packed` is rejected with HTTP 422.
-- Error code: PACKING_SOURCE_UNAVAILABLE.
+### Test Scenario
+1. Create harvest lot with status = 'available'
+2. Update its status to 'packed'
+3. Attempt to create packing lot using this harvest lot as source
+4. Assert HTTP 422 with PACKING_SOURCE_UNAVAILABLE code
 
-Status:
-COMPLETE
+## Test: test_reserved_harvest_lot_is_rejected_with_422
+
+### Command
+```bash
+rtk php artisan test tests/Feature/PackingLotApiTest.php --filter=test_reserved_harvest_lot_is_rejected_with_422
+```
+
+### Result
+PASSED
+- Tests: 1
+- Assertions: 2
+- Duration: 203ms
+
+### Test: test_cancelled_harvest_lot_is_rejected_with_422
+
+### Command
+```bash
+rtk php artisan test tests/Feature/PackingLotApiTest.php --filter=test_cancelled_harvest_lot_is_rejected_with_422
+```
+
+### Result
+PASSED
+- Tests: 1
+- Assertions: 2
+- Duration: 298ms

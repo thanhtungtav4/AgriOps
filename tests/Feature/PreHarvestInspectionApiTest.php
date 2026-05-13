@@ -150,8 +150,29 @@ class PreHarvestInspectionApiTest extends TestCase
 
         $response = $this->postJson('/api/v1/pre-harvest-inspections/' . $inspection->id . '/approve');
 
-        $response->assertStatus(422)
-            ->assertJsonPath('error.code', 'INSPECTION_APPROVAL_BLOCKED');
+        $response->assertStatus(403)
+            ->assertJsonPath('error.code', 'AUTH_FORBIDDEN');
+    }
+
+    public function test_worker_cannot_reject_inspection(): void
+    {
+        $inspection = PreHarvestInspection::create([
+            'farm_id' => $this->farm->id,
+            'planting_batch_id' => $this->batch->id,
+            'inspector_user_id' => $this->worker->id,
+            'status' => 'submitted',
+            'inspected_at' => now(),
+            'checklist' => $this->passingChecklist(),
+        ]);
+
+        Sanctum::actingAs($this->worker);
+
+        $response = $this->postJson('/api/v1/pre-harvest-inspections/' . $inspection->id . '/reject', [
+            'reason' => 'Missing supervisor approval.',
+        ]);
+
+        $response->assertStatus(403)
+            ->assertJsonPath('error.code', 'AUTH_FORBIDDEN');
     }
 
     public function test_user_cannot_create_inspection_for_other_farm_batch(): void

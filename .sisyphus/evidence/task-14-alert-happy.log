@@ -1,0 +1,11 @@
+Command: rtk php artisan test tests/Feature/AlertNotificationApiTest.php
+Date: 2026-05-13
+Agent: AG / Continuation-Agent
+Result: PASS
+
+{"tool":"phpunit","result":"passed","tests":3,"passed":3,"assertions":20,"duration_ms":356}
+
+Covered flows:
+- POST /api/v1/alerts/trigger creates overdue work-task alert for the farm manager role.
+- POST /api/v1/alerts/trigger creates yield-shortfall alert with batch/crop/gap context.
+- PATCH /api/v1/alerts/{id}/read marks an alert as read.
