@@ -128,8 +128,8 @@ class PlanningApiTest extends TestCase
 
         $response
             ->assertUnprocessable()
-            ->assertJsonPath('error', 'planning_error')
-            ->assertJsonPath('message', "Missing loss profile for crop 'Rau cai'. Configure harvest, processing, packing, grade, and reject loss percentages.");
+            ->assertJsonPath('error.code', 'PLANNING_ERROR')
+            ->assertJsonPath('error.message', "Missing loss profile for crop 'Rau cai'. Configure harvest, processing, packing, grade, and reject loss percentages.");
     }
 
     public function test_happy_path_includes_assumptions_and_fulfillment(): void
@@ -340,12 +340,16 @@ class PlanningApiTest extends TestCase
         ]);
 
         $response->assertUnprocessable();
-        $response->assertJsonPath('error', 'planning_error');
-        $response->assertJsonPath('field', 'unit');
+        $response->assertJsonPath('error.code', 'PLANNING_ERROR');
         $response->assertJsonStructure([
-            'error',
-            'message',
-            'field',
+            'error' => [
+                'code',
+                'message',
+                'details' => [
+                    'field',
+                ],
+                'trace_id',
+            ],
         ]);
     }
 }

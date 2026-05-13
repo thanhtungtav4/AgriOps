@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Responses\ApiResponse;
 use App\Models\CropVariety;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class CropVarietyApiController extends Controller
 {
+    use ApiResponse;
+
     public function index(Request $request): JsonResponse
     {
         $query = CropVariety::with('crop');
@@ -19,17 +22,13 @@ class CropVarietyApiController extends Controller
 
         $varieties = $query->orderBy('name')->get();
 
-        return response()->json([
-            'data' => $varieties,
-        ]);
+        return $this->success($varieties);
     }
 
     public function show(int $id): JsonResponse
     {
         $variety = CropVariety::with('crop')->findOrFail($id);
 
-        return response()->json([
-            'data' => $variety,
-        ]);
+        return $this->success($variety);
     }
 }

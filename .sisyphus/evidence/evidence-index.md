@@ -97,20 +97,26 @@ This index catalogs all evidence artifacts in `.sisyphus/evidence/` for:
 | `task-05-batch-foundation.md` | Evidence | Batch/allocation schema and model foundation | Agent F | ✅ |
 | `task-05-lifecycle-api.md` | Evidence | Batch lifecycle API/service tests | Agent G | ✅ |
 | `task-05-allocation-guards.md` | Evidence | Allocation guard service tests | Agent H | ✅ |
+| `task-05-audit-hooks.md` | Evidence | Lifecycle and allocation audit event hooks | Agent G / Integrator | ✅ |
 | `task-06-work-task-schema.md` | Evidence | Work task schema/model tests | Agent J | ✅ |
 | `task-06-task-generation-service.md` | Evidence | Work task generation service tests | Agent K / Integrator | ✅ |
 | `task-06-work-task-api.md` | Evidence | Work task list/show/generate/status API tests | Agent L / Integrator | ✅ |
 | `task-06-farming-log-foundation.md` | Evidence | Farming log schema/model foundation tests | Agent M / Integrator | ✅ |
 | `task-06-work-task-log-api.md` | Evidence | Work task log API, binary photo upload, and validation tests | Integrator | ✅ |
+| `task-06-smoke-evidence.md` | Evidence | API smoke for work task receive, status transition, log submit, and photo upload | Agent G / Integrator | ✅ |
+| `mobile-smoke-continuation.md` | Evidence | Mobile logic-layer smoke for task receive/status/log/photo/offline handling | Agent Y / Integrator | ✅ |
 | `task-06-task-log-happy.log` | Log | Manual/mobile photo upload happy path | TBD | 🟡 |
 | `task-06-task-log-validation.log` | Log | Manual/mobile photo upload validation errors | TBD | 🟡 |
 | `task-07-incident-chemical-isolation.md` | Evidence | Incident + chemical usage trace and isolation guard tests | Integrator | ✅ |
+| `task-07-smoke-evidence.md` | Evidence | API smoke for incident, chemical usage, and isolation guard | Agent G / Integrator | ✅ |
 | `task-07-chemical-trace.log` | Log | Manual/API incident + chemical usage trace smoke | TBD | 🟡 |
 | `task-07-isolation-block.log` | Log | Manual/API isolation guard smoke | TBD | 🟡 |
 | `task-08-pre-harvest-inspection.md` | Evidence | Inspection pass/fail and harvest eligibility gate tests | Integrator | ✅ |
+| `task-08-smoke-evidence.md` | Evidence | API smoke for pre-harvest inspection and harvest unlock gate | Agent G / Integrator | ✅ |
 | `task-08-inspection-pass.log` | Log | Manual/API inspection pass smoke | TBD | 🟡 |
 | `task-08-inspection-fail.log` | Log | Manual/API inspection fail smoke | TBD | 🟡 |
 | `task-09-harvest-lots.md` | Evidence | Harvest with grade breakdown and validation tests | Integrator | ✅ |
+| `task-09-taxonomy-smoke.md` | Evidence | Canonical reject reason taxonomy TDD and smoke evidence | Agent G / Integrator | ✅ |
 | `task-09-harvest-happy.log` | Log | Manual/API harvest happy path smoke | TBD | 🟡 |
 | `task-09-harvest-validation.log` | Log | Manual/API harvest validation smoke | TBD | 🟡 |
 | `task-10-packing-mix.log` | Log | Packing lot with multiple sources | ✅ |
@@ -167,11 +173,11 @@ This index catalogs all evidence artifacts in `.sisyphus/evidence/` for:
 | T2 (Auth + RBAC) | 4 files | 🟡 |
 | T3 (Master Data) | 1 file | ✅ |
 | T4 (Planning) | 7 files | ✅ |
-| T5 (Planting Batch Lifecycle) | 3 files | 🟡 |
-| T6 (Work Task & Farming Log) | 5 files | 🟡 |
-| T7 (Incident + Chemical Isolation) | 1 file | 🟡 |
-| T8 (Pre-harvest Inspection) | 1 file | 🟡 |
-| T9 (Harvest Lots) | 1 file | 🟡 |
+| T5 (Planting Batch Lifecycle) | 4 files | ✅ |
+| T6 (Work Task & Farming Log) | 7 files | 🟡 |
+| T7 (Incident + Chemical Isolation) | 2 files | ✅ |
+| T8 (Pre-harvest Inspection) | 2 files | ✅ |
+| T9 (Harvest Lots) | 2 files | ✅ |
 | T10-T14 (MVP-1/2 remaining) | 0 files | 🔴 |
 
 ---
@@ -190,11 +196,8 @@ This index catalogs all evidence artifacts in `.sisyphus/evidence/` for:
 
 ### LOW Coverage (Evidence Gaps)
 - Security/farm isolation (T2) - Gap identified, not fixed
-- T5 audit trail evidence - Lifecycle/allocation exist; audit trail still pending
-- T6 manual/mobile smoke evidence - Work task/log APIs and binary upload tests exist; manual device/API smoke logs still pending
-- T7 manual/API smoke evidence - isolation service is wired into T9 harvest creation; manual/API smoke logs still pending
-- T8 manual/API smoke evidence - pre-harvest inspection gate is wired into T9 harvest creation; manual/API smoke logs still pending
-- T9 packing integration evidence - harvest lot API exists; T10 packing must consume available harvest lots
+- T6 device-level mobile smoke evidence - API and mobile logic-layer tests exist; real device/emulator evidence still pending
+- T10 packing source invalid log - packing API exists; explicit invalid source log remains pending
 - T10-T14 MVP-1/2 downstream modules - No evidence created
 - All MVP-2 tasks (T12-T14) - No evidence created
 
@@ -215,10 +218,9 @@ This index catalogs all evidence artifacts in `.sisyphus/evidence/` for:
 
 ### HIGH (Should Close Before MVP-1)
 
-4. **Batch lifecycle audit trail tests** - T5 lifecycle/guard tests exist; audit event tests still pending
-5. **Chemical isolation guard smoke evidence** - T9 harvest creation consumes the guard; manual/API smoke logs still pending
-6. **PostgreSQL staging migration** - Only SQLite/local tested
-7. **Planning TDD RED log** - `task-04-red.log` exists but is incomplete
+4. **Device-level mobile smoke** - API and service tests exist; Expo device/emulator flow still pending
+5. **PostgreSQL staging migration** - Local PostgreSQL evidence exists; staging credentialed run still requires owner action
+6. **Planning TDD RED log** - `task-04-red.log` exists but is incomplete
 
 ### MEDIUM (MVP Hardening)
 

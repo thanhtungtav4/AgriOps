@@ -43,11 +43,11 @@ This log tracks known issues, risks, and blockers that affect release readiness 
 | ID | Risk | Severity | Owner | Mitigation | Gate | Status |
 |----|------|----------|-------|------------|------|--------|
 | MAJ-001 | **No automated regression tests** - No test suite for happy paths beyond T4 | Major | Agent A | Add E2E smoke test for demand → QR | MVP-1 | ✅ RESOLVED |
-| MAJ-002 | **API error contract inconsistent** - Some controllers use standard, some don't | Major | Agent C | Audit and update AuthController, others | MVP-0 | 🟡 PARTIAL |
+| MAJ-002 | **API error contract inconsistent** - crop lookup and planning domain errors now use the shared contract; full framework validation normalization remains | Major | Agent C | Continue normalization when new approval/controllers are introduced | MVP-0 | 🟡 PARTIAL |
 | MAJ-003 | **Batch lifecycle API missing** - `planting_batches` table/model exists, but lifecycle endpoints/actions are not implemented | Major | Agent F/G | Implement T5 API/lifecycle service in next slice | MVP-1 | ✅ RESOLVED |
 | MAJ-004 | **Allocation workflow incomplete** - allocation FK exists, but allocation guards/service are not implemented | Major | Agent F/H | Add allocation service and conflict tests | MVP-1 | ✅ RESOLVED |
 | MAJ-005 | **Packing lot FK not enforced** - No FK on `packing_lot_sources` yet | Major | Agent B | Add FK constraint in T10 migration | MVP-1 | ✅ RESOLVED |
-| MAJ-006 | **Manual mobile task log smoke missing** - automated task/log/photo upload tests pass, but no device/API smoke evidence has been captured | Major | Agent N/TBD | Run mobile/API smoke for task receive → log submit → photo stored | MVP-1 | 🟡 PARTIAL |
+| MAJ-006 | **Device-level mobile task log smoke missing** - API and mobile logic-layer tests pass, but emulator/device evidence is not captured | Major | Agent N/TBD | Run Expo device/emulator smoke for task receive → log submit → photo stored | MVP-1 | 🟡 PARTIAL |
 
 ---
 
@@ -121,7 +121,7 @@ This log tracks known issues, risks, and blockers that affect release readiness 
 | M1 | Batch lifecycle E2E | ✅ | `task-05-lifecycle-api.md`, `PlantingBatchApiTest` |
 | M2 | Allocation guards | ✅ | `task-05-allocation-guards.md`, `PlantingBatchAllocationGuardTest` |
 | M3 | Task generation | ✅ | `task-06-work-task-schema.md`, `task-06-task-generation-service.md`, `task-06-work-task-api.md` |
-| M4 | Mobile log submission | 🟡 | `task-06-farming-log-foundation.md`, `task-06-work-task-log-api.md`; manual/mobile smoke pending |
+| M4 | Mobile log submission | 🟡 | `task-06-farming-log-foundation.md`, `task-06-work-task-log-api.md`, `task-06-smoke-evidence.md`, `mobile-smoke-continuation.md`; device/emulator smoke pending |
 | M5 | Incident + chemical trace | ✅ | `task-07-incident-chemical-isolation.md` |
 | M6 | Isolation blocking | ✅ | `task-07-incident-chemical-isolation.md`, `HarvestLotApiTest::test_active_isolation_blocks_harvest` |
 | M7 | Inspection → harvest | ✅ | `task-08-pre-harvest-inspection.md`, `HarvestLotApiTest` approved/rejected inspection gates |

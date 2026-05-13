@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Responses\ApiResponse;
 use App\Models\Crop;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class CropApiController extends Controller
 {
+    use ApiResponse;
+
     public function index(Request $request): JsonResponse
     {
         $query = Crop::query();
@@ -19,9 +22,7 @@ class CropApiController extends Controller
 
         $crops = $query->orderBy('name')->get();
 
-        return response()->json([
-            'data' => $crops,
-        ]);
+        return $this->success($crops);
     }
 
     public function show(int $id): JsonResponse
@@ -35,8 +36,6 @@ class CropApiController extends Controller
             'laborNorms',
         ])->findOrFail($id);
 
-        return response()->json([
-            'data' => $crop,
-        ]);
+        return $this->success($crop);
     }
 }

@@ -54,7 +54,14 @@ class PlanningController extends Controller
 
             return response()->json($result);
         } catch (DomainException $e) {
-            return response()->json($e->toArray(), 422);
+            $details = [];
+            if ($e->field) {
+                $details['field'] = $e->field;
+            }
+            if (!empty($e->context)) {
+                $details = array_merge($details, $e->context);
+            }
+            return $this->error('PLANNING_ERROR', $e->getMessage(), $details, 422);
         }
     }
 
