@@ -6,12 +6,18 @@ use Illuminate\Http\JsonResponse;
 
 trait ApiResponse
 {
-    protected function success(mixed $data, int $status = 200): JsonResponse
+    protected function success(mixed $data, int $status = 200, ?string $message = null): JsonResponse
     {
-        return response()->json([
+        $response = [
             'data' => $data,
             'meta' => ['trace_id' => request()->header('X-Trace-ID') ?? uniqid()],
-        ], $status);
+        ];
+
+        if ($message) {
+            $response['message'] = $message;
+        }
+
+        return response()->json($response, $status);
     }
 
     protected function error(

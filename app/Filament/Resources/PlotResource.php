@@ -15,42 +15,56 @@ class PlotResource extends Resource
 {
     protected static ?string $model = Plot::class;
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Master Data';
+    protected static string | \UnitEnum | null $navigationGroup = 'Dữ liệu nền';
 
-    protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-map';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-map';
+
+    protected static ?string $modelLabel = 'khu trồng';
+
+    protected static ?string $pluralModelLabel = 'khu trồng';
+
+    protected static ?string $navigationLabel = 'Khu trồng';
 
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->schema([
                 Forms\Components\Select::make('farm_id')
+                    ->label('Nông trại')
                     ->relationship('farm', 'name')
                     ->required(),
                 Forms\Components\TextInput::make('code')
+                    ->label('Mã khu')
                     ->required()
                     ->maxLength(50),
                 Forms\Components\TextInput::make('name')
+                    ->label('Tên khu')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('area_m2')
+                    ->label('Diện tích (m²)')
                     ->numeric()
                     ->default(0),
                 Forms\Components\TextInput::make('soil_type')
+                    ->label('Loại đất')
                     ->maxLength(100),
                 Forms\Components\TextInput::make('water_source')
+                    ->label('Nguồn nước')
                     ->maxLength(100),
                 Forms\Components\Select::make('status')
+                    ->label('Trạng thái')
                     ->options([
-                        'available' => 'Available',
-                        'preparing' => 'Preparing',
-                        'planting' => 'Planting',
-                        'harvesting' => 'Harvesting',
-                        'rest' => 'Rest',
-                        'restoring' => 'Restoring',
-                        'suspended' => 'Suspended',
+                        'available' => 'Sẵn sàng',
+                        'preparing' => 'Đang chuẩn bị',
+                        'planting' => 'Đang trồng',
+                        'harvesting' => 'Đang thu hoạch',
+                        'rest' => 'Nghỉ đất',
+                        'restoring' => 'Phục hồi đất',
+                        'suspended' => 'Tạm ngưng',
                     ])
                     ->default('available'),
                 Forms\Components\Textarea::make('notes')
+                    ->label('Ghi chú')
                     ->maxLength(65535)
                     ->columnSpanFull(),
             ]);
@@ -60,37 +74,44 @@ class PlotResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->sortable(),
-                Tables\Columns\TextColumn::make('farm.name')->searchable(),
-                Tables\Columns\TextColumn::make('code')->searchable(),
-                Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('area_m2'),
-                Tables\Columns\TextColumn::make('status'),
-                Tables\Columns\TextColumn::make('soil_type'),
-                Tables\Columns\TextColumn::make('created_at')->dateTime(),
+                Tables\Columns\TextColumn::make('id')->label('ID')->sortable(),
+                Tables\Columns\TextColumn::make('farm.name')->label('Nông trại')->searchable(),
+                Tables\Columns\TextColumn::make('code')->label('Mã khu')->searchable(),
+                Tables\Columns\TextColumn::make('name')->label('Tên khu'),
+                Tables\Columns\TextColumn::make('area_m2')->label('Diện tích (m²)'),
+                Tables\Columns\TextColumn::make('status')->label('Trạng thái')->formatStateUsing(fn (?string $state): string => self::statusOptions()[$state] ?? ($state ?? '-')),
+                Tables\Columns\TextColumn::make('soil_type')->label('Loại đất'),
+                Tables\Columns\TextColumn::make('created_at')->label('Ngày tạo')->dateTime(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('farm_id')
+                    ->label('Nông trại')
                     ->relationship('farm', 'name'),
                 Tables\Filters\SelectFilter::make('status')
-                    ->options([
-                        'available' => 'Available',
-                        'preparing' => 'Preparing',
-                        'planting' => 'Planting',
-                        'harvesting' => 'Harvesting',
-                        'rest' => 'Rest',
-                        'restoring' => 'Restoring',
-                        'suspended' => 'Suspended',
-                    ]),
+                    ->label('Trạng thái')
+                    ->options(self::statusOptions()),
             ])
             ->actions([
-                Actions\EditAction::make(),
+                Actions\EditAction::make()->label('Sửa'),
             ])
             ->bulkActions([
                 Actions\BulkActionGroup::make([
-                    Actions\DeleteBulkAction::make(),
+                    Actions\DeleteBulkAction::make()->label('Xoá đã chọn'),
                 ]),
             ]);
+    }
+
+    private static function statusOptions(): array
+    {
+        return [
+            'available' => 'Sẵn sàng',
+            'preparing' => 'Đang chuẩn bị',
+            'planting' => 'Đang trồng',
+            'harvesting' => 'Đang thu hoạch',
+            'rest' => 'Nghỉ đất',
+            'restoring' => 'Phục hồi đất',
+            'suspended' => 'Tạm ngưng',
+        ];
     }
 
     public static function getPages(): array

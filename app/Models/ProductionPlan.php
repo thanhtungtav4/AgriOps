@@ -66,4 +66,9 @@ class ProductionPlan extends Model
     {
         return $this->hasMany(CostRecord::class);
     }
+
+    public function postSeasonReview()
+    {
+        return $this->hasOne(PostSeasonReview::class);
+    }
 }

@@ -10,6 +10,9 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             TestUserSeeder::class,
+            AgriFarmRegionalSeeder::class,
+            AgriCropCatalogSeeder::class,
+            DemoWorkflowSeeder::class,
         ]);
     }
 }

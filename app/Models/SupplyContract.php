@@ -29,6 +29,11 @@ class SupplyContract extends Model
         'quantity' => 'decimal:2',
     ];
 
+    public function farm(): BelongsTo
+    {
+        return $this->belongsTo(Farm::class);
+    }
+
     public function crop(): BelongsTo
     {
         return $this->belongsTo(Crop::class);

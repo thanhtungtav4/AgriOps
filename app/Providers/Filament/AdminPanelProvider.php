@@ -27,6 +27,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->brandName('AgriOps Quản Trị')
             ->colors([
                 'primary' => Color::Green,
             ])

@@ -15,23 +15,33 @@ class CropVarietyResource extends Resource
 {
     protected static ?string $model = CropVariety::class;
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Master Data';
+    protected static string | \UnitEnum | null $navigationGroup = 'Dữ liệu nền';
 
-    protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-sparkles';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-sparkles';
+
+    protected static ?string $modelLabel = 'giống cây';
+
+    protected static ?string $pluralModelLabel = 'giống cây';
+
+    protected static ?string $navigationLabel = 'Giống cây';
 
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->schema([
                 Forms\Components\Select::make('crop_id')
+                    ->label('Cây trồng')
                     ->relationship('crop', 'name')
                     ->required(),
                 Forms\Components\TextInput::make('name')
+                    ->label('Tên giống')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('code')
+                    ->label('Mã giống')
                     ->maxLength(50),
                 Forms\Components\Textarea::make('description')
+                    ->label('Mô tả')
                     ->maxLength(65535)
                     ->columnSpanFull(),
             ]);
@@ -41,22 +51,23 @@ class CropVarietyResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->sortable(),
-                Tables\Columns\TextColumn::make('crop.name')->searchable(),
-                Tables\Columns\TextColumn::make('name')->searchable(),
-                Tables\Columns\TextColumn::make('code'),
-                Tables\Columns\TextColumn::make('created_at')->dateTime(),
+                Tables\Columns\TextColumn::make('id')->label('ID')->sortable(),
+                Tables\Columns\TextColumn::make('crop.name')->label('Cây trồng')->searchable(),
+                Tables\Columns\TextColumn::make('name')->label('Tên giống')->searchable(),
+                Tables\Columns\TextColumn::make('code')->label('Mã giống'),
+                Tables\Columns\TextColumn::make('created_at')->label('Ngày tạo')->dateTime(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('crop_id')
+                    ->label('Cây trồng')
                     ->relationship('crop', 'name'),
             ])
             ->actions([
-                Actions\EditAction::make(),
+                Actions\EditAction::make()->label('Sửa'),
             ])
             ->bulkActions([
                 Actions\BulkActionGroup::make([
-                    Actions\DeleteBulkAction::make(),
+                    Actions\DeleteBulkAction::make()->label('Xoá đã chọn'),
                 ]),
             ]);
     }

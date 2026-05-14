@@ -27,6 +27,11 @@ class SupplyDemand extends Model
         'quantity' => 'decimal:2',
     ];
 
+    public function farm(): BelongsTo
+    {
+        return $this->belongsTo(Farm::class);
+    }
+
     public function contract(): BelongsTo
     {
         return $this->belongsTo(SupplyContract::class, 'supply_contract_id');

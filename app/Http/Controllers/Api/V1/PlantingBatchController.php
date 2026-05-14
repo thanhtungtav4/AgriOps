@@ -42,7 +42,7 @@ class PlantingBatchController extends Controller
     public function show(Request $request, int $id): JsonResponse
     {
         $user = $request->user();
-        $batch = PlantingBatch::with(['farm', 'crop', 'variety', 'allocations.plot'])->findOrFail($id);
+        $batch = PlantingBatch::with(['farm', 'crop', 'variety', 'allocations.plot', 'allocations.bed'])->findOrFail($id);
 
         if (!$user->isAdmin() && $batch->farm_id !== $user->farm_id) {
             return $this->forbiddenError(

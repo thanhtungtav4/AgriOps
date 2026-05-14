@@ -86,4 +86,14 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->role === self::ROLE_FARM_MANAGER;
     }
+
+    public function canManagePostSeasonReview(): bool
+    {
+        return in_array($this->role, [
+            self::ROLE_ADMIN,
+            self::ROLE_FARM_OWNER,
+            self::ROLE_FARM_MANAGER,
+            self::ROLE_TECHNICIAN,
+        ]);
+    }
 }
